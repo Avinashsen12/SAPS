@@ -104,7 +104,7 @@ const Resumes = () => {
               data-testid="file-upload-input"
             />
           </div>
-        )
+        }
       />
 
       <div className="p-8">
