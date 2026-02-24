@@ -1,0 +1,37 @@
+Sarah Johnson
+Data Scientist
+Email: sarah.j@email.com
+Phone: +1-555-987-6543
+Location: New York, NY
+
+Professional Summary:
+3 years of experience in data science and machine learning with expertise in Python, R, and big data technologies.
+
+Skills:
+- Python, R, SQL
+- TensorFlow, PyTorch, Scikit-learn
+- Pandas, NumPy, Matplotlib
+- Apache Spark, Hadoop
+- Tableau, Power BI
+
+Experience:
+Data Scientist | DataCorp (2022-2024)
+- Developed machine learning models for predictive analytics
+- Analyzed large datasets using Python and Apache Spark
+- Created interactive dashboards using Tableau
+
+Junior Data Analyst | AnalyticsFirm (2021-2022)
+- Performed statistical analysis using R and Python
+- Built data pipelines using SQL and ETL processes
+- Collaborated with business stakeholders to understand requirements
+
+Education:
+Master of Science in Data Science
+NYU (2019-2021)
+
+Bachelor of Science in Statistics
+UC Berkeley (2015-2019)
+
+Certifications:
+- Google Cloud Professional Data Engineer
+- Microsoft Azure Data Scientist Associate
