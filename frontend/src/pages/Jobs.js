@@ -49,7 +49,7 @@ const Jobs = () => {
             <Plus size={16} className="mr-2" />
             Create New Job
           </Button>
-        )
+        }
       />
 
       <div className="p-8">
