@@ -1,0 +1,139 @@
+{
+  "identity": {
+    "name": "SAPS",
+    "tagline": "Precision Talent Placement with AI",
+    "tone": "Authoritative, Efficient, Data-Driven, Trustworthy",
+    "target_audience": "Corporate HR, Recruiters, Talent Acquisition Leads",
+    "design_archetype": "Swiss Performance (Archetype 4 + 2)",
+    "aesthetic": "High-density information, whitespace for clarity, minimal distraction, trusted corporate colors"
+  },
+  "routes": {
+    "public": [
+      { "path": "/", "name": "Landing", "type": "marketing" },
+      { "path": "/login", "name": "Login", "type": "auth" }
+    ],
+    "private": [
+      { "path": "/dashboard", "name": "Dashboard Overview", "type": "app" },
+      { "path": "/resumes", "name": "Resume Database", "type": "app" },
+      { "path": "/resumes/:id", "name": "Resume Detail", "type": "app" },
+      { "path": "/jobs", "name": "Job Descriptions", "type": "app" },
+      { "path": "/jobs/new", "name": "Create JD", "type": "app" },
+      { "path": "/jobs/:id", "name": "JD Detail & Matches", "type": "app" }
+    ]
+  },
+  "design_system": {
+    "typography": {
+      "headings": {
+        "family": "Manrope, sans-serif",
+        "weights": ["600", "700", "800"],
+        "usage": "Section headers, Modal titles, KPI values"
+      },
+      "body": {
+        "family": "Public Sans, sans-serif",
+        "weights": ["400", "500", "600"],
+        "usage": "Table data, Resume text, Form labels"
+      },
+      "mono": {
+        "family": "JetBrains Mono, monospace",
+        "usage": "Parsing scores, ID badges, JSON data views"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": "#0F172A", 
+        "primary_foreground": "#F8FAFC",
+        "brand_accent": "#2563EB",
+        "brand_accent_hover": "#1D4ED8",
+        "background": "#F8FAFC",
+        "surface": "#FFFFFF",
+        "border": "#E2E8F0"
+      },
+      "semantic": {
+        "success": "#16A34A", 
+        "warning": "#CA8A04", 
+        "error": "#DC2626", 
+        "info": "#2563EB"
+      },
+      "matching_scores": {
+        "high": { "bg": "#DCFCE7", "text": "#15803D", "bar": "#16A34A", "label": "Highly Suitable (80-100%)" },
+        "moderate": { "bg": "#FEF9C3", "text": "#854D0E", "bar": "#CA8A04", "label": "Moderately Suitable (60-79%)" },
+        "low": { "bg": "#FFEDD5", "text": "#9A3412", "bar": "#F97316", "label": "Low Match (50-59%)" },
+        "none": { "bg": "#FEE2E2", "text": "#991B1B", "bar": "#DC2626", "label": "Not Suitable (<50%)" }
+      }
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-8 lg:p-12",
+      "card_padding": "p-6",
+      "section_gap": "gap-8",
+      "element_gap": "gap-4"
+    },
+    "radius": {
+      "default": "rounded-md",
+      "button": "rounded-md",
+      "card": "rounded-lg",
+      "input": "rounded-md"
+    },
+    "shadows": {
+      "card": "shadow-sm hover:shadow-md transition-shadow duration-200",
+      "dropdown": "shadow-lg border border-border/50",
+      "sticky": "shadow-[0_1px_2px_rgba(0,0,0,0.05)]"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm font-medium",
+      "secondary": "bg-white border border-input hover:bg-slate-50 text-slate-700 font-medium",
+      "ghost": "hover:bg-slate-100 text-slate-600",
+      "destructive": "bg-red-600 text-white hover:bg-red-700"
+    },
+    "cards": {
+      "dashboard_stat": "bg-white border border-border p-6 flex flex-col gap-2",
+      "resume_card": "bg-white border border-border hover:border-brand-accent/50 transition-colors group cursor-pointer"
+    },
+    "tables": {
+      "container": "w-full text-sm text-left border rounded-md overflow-hidden bg-white",
+      "header": "bg-slate-50 text-slate-500 font-medium h-10 px-4 border-b",
+      "row": "border-b last:border-0 hover:bg-slate-50/50 transition-colors",
+      "cell": "p-4 align-middle"
+    },
+    "status_badge": {
+      "base": "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ring-1 ring-inset",
+      "active": "bg-green-50 text-green-700 ring-green-600/20",
+      "closed": "bg-slate-50 text-slate-600 ring-slate-500/10",
+      "on_hold": "bg-yellow-50 text-yellow-800 ring-yellow-600/20"
+    }
+  },
+  "visual_enhancers": {
+    "glass_header": "bg-white/80 backdrop-blur-md border-b border-slate-200/50 sticky top-0 z-50",
+    "tracing_beam": "Use for the 'Matching in Progress' indicator or active state of best candidate card",
+    "empty_state": "Use clean SVG icons or ASCII art for empty states (No JDs, No Resumes)",
+    "loading": "Skeleton loaders for table rows; 'Scanning' animation for parsing"
+  },
+  "image_assets": {
+    "hero_bg": "https://images.unsplash.com/photo-1681304211031-052c84431cf8?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "hero_social_proof": "https://images.unsplash.com/photo-1758691736975-9f7f643d178e?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "login_sidebar": "https://images.unsplash.com/photo-1668269020330-365a63eddaa3?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "office_context": "https://images.unsplash.com/photo-1758873268631-fa944fc5cad2?crop=entropy&cs=srgb&fm=jpg&q=85"
+  },
+  "universal_guidelines": {
+    "general": [
+      "DO NOT use generic centered layouts for the dashboard.",
+      "Use 'Manrope' for all headings and 'Public Sans' for body text. Add these to index.html or import in CSS.",
+      "Ensure all interactive elements have `data-testid` attributes.",
+      "Light mode is default. Dark mode must be carefully calibrated (slate-900 bg, not pure black).",
+      "Use Sonner for toasts."
+    ],
+    "accessibility": [
+      "Ensure text contrast ratios (4.5:1 for normal text).",
+      "Focus states must be visible (ring-2 ring-brand-accent).",
+      "Use semantic HTML (main, section, article, nav)."
+    ]
+  },
+  "instructions_to_main_agent": {
+    "step_1": "Setup Design System: Update tailwind.config.js with colors, fonts, and border radii. Install necessary fonts.",
+    "step_2": "Build Layout Shell: Create the Sidebar + Header + Main Content wrapper. Use 'Glass Header' style.",
+    "step_3": "Develop Components: Create reusable 'StatCard', 'DataTable', 'StatusBadge', 'ScoreBar'.",
+    "step_4": "Implement Pages: Start with Dashboard, then JD Management, then Resume Upload/View.",
+    "step_5": "Polish: Add micro-interactions, skeleton loading states, and empty states."
+  }
+}
