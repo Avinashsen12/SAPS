@@ -40,7 +40,7 @@ const Jobs = () => {
       <Header
         title="Job Descriptions"
         subtitle={`${jobs.length} job description(s)`}
-        action=(
+        action={
           <Button
             onClick={() => navigate('/jobs/new')}
             className="bg-primary text-primary-foreground hover:bg-primary/90"
