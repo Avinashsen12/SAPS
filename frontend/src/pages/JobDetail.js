@@ -165,7 +165,7 @@ const JobDetail = () => {
               Delete
             </Button>
           </div>
-        )
+        }
       />
 
       <div className="p-8 space-y-6">
