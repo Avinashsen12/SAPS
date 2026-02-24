@@ -135,7 +135,7 @@ const JobDetail = () => {
           </div>
         }
         subtitle="Job Description & Candidate Matches"
-        action=(
+        action={
           <div className="flex items-center gap-3">
             <Select value={job.status} onValueChange={handleStatusChange}>
               <SelectTrigger className="w-[140px]" data-testid="job-status-select">
