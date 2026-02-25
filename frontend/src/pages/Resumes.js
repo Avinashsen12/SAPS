@@ -28,6 +28,7 @@ const Resumes = () => {
   const [showResumeDialog, setShowResumeDialog] = useState(false);
   const [resumeContent, setResumeContent] = useState(null);
   const [expandedMatches, setExpandedMatches] = useState({});
+  const [loadingMatches, setLoadingMatches] = useState({});
 
   useEffect(() => {
     fetchResumes();
