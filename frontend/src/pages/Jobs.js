@@ -144,6 +144,26 @@ const Jobs = () => {
         subtitle={`${jobs.length} job description(s)`}
         action={
           <div className="flex items-center gap-3">
+            <label htmlFor="zip-upload-jobs">
+              <Button
+                as="span"
+                variant="outline"
+                className="cursor-pointer"
+                disabled={uploadingZip}
+                data-testid="upload-zip-jobs-button"
+              >
+                <Upload size={16} className="mr-2" />
+                {uploadingZip ? 'Processing ZIP...' : 'Upload ZIP'}
+              </Button>
+            </label>
+            <input
+              id="zip-upload-jobs"
+              type="file"
+              accept=".zip"
+              onChange={handleZipUpload}
+              className="hidden"
+              data-testid="zip-upload-jobs-input"
+            />
             <label htmlFor="jd-file-upload">
               <Button
                 as="span"
