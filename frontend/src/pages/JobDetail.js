@@ -400,25 +400,7 @@ const JobDetail = () => {
                     <span className="text-sm text-slate-500">({lowMatch.length})</span>
                   </div>
                   <div className="space-y-2">
-                    {lowMatch.map((match) => (
-                      <div key={match.resume_id} className="border border-slate-200 rounded-lg p-4" data-testid={`match-card-${match.resume_id}`}>
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <p className="font-semibold text-slate-900">{match.resume_name}</p>
-                            {match.resume_email && (
-                              <div className="flex items-center gap-1 text-sm text-slate-600 mt-1">
-                                <Mail size={12} />
-                                {match.resume_email}
-                              </div>
-                            )}
-                          </div>
-                          <span className="font-mono text-lg font-bold" style={{ color: '#9A3412' }}>
-                            {match.total_score.toFixed(1)}%
-                          </span>
-                        </div>
-                        <ScoreBar score={match.total_score} category={match.category} />
-                      </div>
-                    ))}
+                    {lowMatch.map((match) => renderMatchCard(match, '#9A3412'))}
                   </div>
                 </div>
               )}
