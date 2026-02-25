@@ -361,8 +361,17 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> D
     common_words = set(resume_text.split()) & set(jd_text.split())
     scores['keyword_score'] = min(len(common_words) * 0.5, 5)
     
-    scores['explanation'] = explanation
-    return scores
+    # Return both scores and explanation separately
+    return {
+        'skill_score': scores['skill_score'],
+        'experience_score': scores['experience_score'],
+        'tools_score': scores['tools_score'],
+        'industry_score': scores['industry_score'],
+        'certification_score': scores['certification_score'],
+        'location_score': scores['location_score'],
+        'keyword_score': scores['keyword_score'],
+        'explanation': explanation
+    }
 
 def categorize_score(total_score: float) -> MatchCategory:
     if total_score >= 80:
