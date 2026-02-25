@@ -16,6 +16,7 @@ const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchJobs();
@@ -32,6 +33,30 @@ const Jobs = () => {
       toast.error('Failed to fetch job descriptions');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBulkUpload = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append('files', file);
+    });
+
+    try {
+      const response = await axios.post(`${API}/jobs/upload-bulk`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success(`Successfully uploaded ${response.data.length} job description(s)`);
+      fetchJobs();
+    } catch (error) {
+      console.error('Error uploading JDs:', error);
+      toast.error('Failed to upload job descriptions');
+    } finally {
+      setUploading(false);
     }
   };
 
