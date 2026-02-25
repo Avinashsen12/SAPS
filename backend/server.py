@@ -494,6 +494,79 @@ def categorize_score(total_score: float) -> MatchCategory:
     else:
         return MatchCategory.NOT_SUITABLE
 
+@api_router.post("/public/apply")
+async def public_candidate_apply(
+    file: UploadFile = File(...),
+    current_location: str = Form(...),
+    preferred_locations: str = Form(...),
+    current_salary: str = Form(None),
+    expected_salary: str = Form(...),
+    notice_period: str = Form(None),
+    availability: str = Form(None)
+):
+    """Public endpoint for candidates to submit their resumes"""
+    try:
+        file_bytes = await file.read()
+        filename = file.filename.lower()
+        
+        # Extract text based on file type
+        if filename.endswith('.pdf'):
+            raw_text = extract_text_from_pdf(file_bytes)
+        elif filename.endswith('.docx'):
+            raw_text = extract_text_from_docx(file_bytes)
+        elif filename.endswith('.txt'):
+            raw_text = extract_text_from_txt(file_bytes)
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported file format. Please upload PDF, DOCX, or TXT")
+        
+        if not raw_text.strip():
+            raise HTTPException(status_code=400, detail="Could not extract text from resume. Please ensure file is not corrupted")
+        
+        # Parse resume with AI
+        parsed_data = await parse_resume_with_ai(raw_text)
+        
+        # Create resume with additional details
+        resume = Resume(
+            filename=file.filename,
+            name=parsed_data.get('name'),
+            email=parsed_data.get('email'),
+            phone=parsed_data.get('phone'),
+            skills=parsed_data.get('skills', []),
+            experience_years=parsed_data.get('experience_years'),
+            tools=parsed_data.get('tools', []),
+            certifications=parsed_data.get('certifications', []),
+            industry=parsed_data.get('industry'),
+            location=parsed_data.get('location'),
+            education=parsed_data.get('education'),
+            raw_text=raw_text,
+            parsed_data=parsed_data,
+            current_location=current_location,
+            preferred_locations=[loc.strip() for loc in preferred_locations.split(',') if loc.strip()],
+            current_salary=current_salary,
+            expected_salary=expected_salary,
+            notice_period=notice_period,
+            availability=availability,
+            source="candidate_portal"
+        )
+        
+        # Save to database
+        doc = resume.model_dump()
+        doc['upload_date'] = doc['upload_date'].isoformat()
+        await db.resumes.insert_one(doc)
+        
+        return {
+            "success": True,
+            "message": "Application submitted successfully!",
+            "candidate_name": resume.name or "Candidate",
+            "resume_id": resume.id
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error in public application: {e}")
+        raise HTTPException(status_code=500, detail="Failed to process application. Please try again")
+
 @api_router.post("/resumes/upload-bulk", response_model=List[ResumeResponse])
 async def upload_bulk_resumes(files: List[UploadFile] = File(...)):
     uploaded_resumes = []
