@@ -3,6 +3,14 @@ import axios from 'axios';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
+import ScoreBar from '@/components/ScoreBar';
+import StatusBadge from '@/components/StatusBadge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Upload, FileText, Trash2, Calendar, Mail, MapPin, X, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
