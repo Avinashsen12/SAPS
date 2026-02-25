@@ -1,0 +1,21 @@
+John Smith
+Email: john.smith@email.com
+Phone: (555) 123-4567
+Location: New York, NY
+
+PROFESSIONAL SUMMARY
+Experienced Software Engineer with 5 years of expertise in Python, JavaScript, and React.
+
+SKILLS
+- Programming: Python, JavaScript, React, Node.js
+- Tools: Git, Docker, AWS
+- Databases: PostgreSQL, MongoDB
+
+EXPERIENCE
+Senior Software Engineer - Tech Corp (2020-2025)
+- Developed web applications using React and Node.js
+- Led team of 3 developers
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of Technology, 2020
