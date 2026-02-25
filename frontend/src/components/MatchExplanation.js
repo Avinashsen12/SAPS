@@ -1,22 +1,39 @@
 import React from 'react';
-import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Brain } from 'lucide-react';
 
 const MatchExplanation = ({ explanation }) => {
   if (!explanation) return null;
 
   return (
     <div className="space-y-3 text-sm">
+      {explanation.ai_reasoning && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <p className="font-semibold text-blue-900 flex items-center gap-2 mb-2">
+            <Brain size={16} />
+            AI Analysis
+          </p>
+          <p className="text-blue-800 text-sm">{explanation.ai_reasoning}</p>
+        </div>
+      )}
+
       {explanation.matched_skills && explanation.matched_skills.length > 0 && (
         <div>
           <p className="font-semibold text-green-700 flex items-center gap-2 mb-1">
             <CheckCircle size={16} />
             Matched Skills ({explanation.matched_skills.length})
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="space-y-1">
             {explanation.matched_skills.map((skill, idx) => (
-              <span key={idx} className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full">
-                {skill}
-              </span>
+              <div key={idx} className="flex items-start gap-2">
+                <span className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full">
+                  {skill}
+                </span>
+                {explanation.match_explanations && explanation.match_explanations[skill] && (
+                  <span className="text-xs text-slate-600 italic">
+                    {explanation.match_explanations[skill]}
+                  </span>
+                )}
+              </div>
             ))}
           </div>
         </div>
