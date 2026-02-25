@@ -18,6 +18,8 @@ import json
 import re
 import zipfile
 import tempfile
+from pdf2image import convert_from_bytes
+import pytesseract
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
