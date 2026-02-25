@@ -37,6 +37,33 @@ const Dashboard = () => {
     }
   };
 
+  const handleZipUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.zip')) {
+      toast.error('Please upload a ZIP file');
+      return;
+    }
+
+    setUploadingZip(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(`${API}/upload-zip`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success(`Successfully uploaded: ${response.data.resumes_uploaded} resumes, ${response.data.jds_uploaded} job descriptions`);
+      fetchDashboardData();
+    } catch (error) {
+      console.error('Error uploading ZIP:', error);
+      toast.error('Failed to process ZIP file');
+    } finally {
+      setUploadingZip(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
