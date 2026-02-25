@@ -34,6 +34,10 @@ const JobDetail = () => {
   const [loading, setLoading] = useState(true);
   const [matching, setMatching] = useState(false);
   const [minScore, setMinScore] = useState(0);
+  const [selectedResume, setSelectedResume] = useState(null);
+  const [resumeContent, setResumeContent] = useState(null);
+  const [showResumeDialog, setShowResumeDialog] = useState(false);
+  const [expandedMatch, setExpandedMatch] = useState(null);
 
   useEffect(() => {
     fetchJobDetails();
