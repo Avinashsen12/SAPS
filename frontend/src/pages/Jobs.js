@@ -66,14 +66,37 @@ const Jobs = () => {
         title="Job Descriptions"
         subtitle={`${jobs.length} job description(s)`}
         action={
-          <Button
-            onClick={() => navigate('/jobs/new')}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-            data-testid="create-new-job-button"
-          >
-            <Plus size={16} className="mr-2" />
-            Create New Job
-          </Button>
+          <div className="flex items-center gap-3">
+            <label htmlFor="jd-file-upload">
+              <Button
+                as="span"
+                variant="outline"
+                className="cursor-pointer"
+                disabled={uploading}
+                data-testid="upload-jds-button"
+              >
+                <Upload size={16} className="mr-2" />
+                {uploading ? 'Uploading...' : 'Upload JDs'}
+              </Button>
+            </label>
+            <input
+              id="jd-file-upload"
+              type="file"
+              multiple
+              accept=".pdf,.docx,.txt"
+              onChange={handleBulkUpload}
+              className="hidden"
+              data-testid="jd-file-upload-input"
+            />
+            <Button
+              onClick={() => navigate('/jobs/new')}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              data-testid="create-new-job-button"
+            >
+              <Plus size={16} className="mr-2" />
+              Create New Job
+            </Button>
+          </div>
         }
       />
 
