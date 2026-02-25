@@ -24,6 +24,10 @@ const Resumes = () => {
   const [recentOnly, setRecentOnly] = useState(false);
   const [uploadingZip, setUploadingZip] = useState(false);
   const [matchResults, setMatchResults] = useState(null);
+  const [expandedSkills, setExpandedSkills] = useState({});
+  const [showResumeDialog, setShowResumeDialog] = useState(false);
+  const [resumeContent, setResumeContent] = useState(null);
+  const [expandedMatches, setExpandedMatches] = useState({});
 
   useEffect(() => {
     fetchResumes();
