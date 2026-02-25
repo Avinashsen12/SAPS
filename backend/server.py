@@ -848,7 +848,14 @@ async def get_resumes(recent_only: bool = False):
             industry=r.get('industry'),
             location=r.get('location'),
             education=r.get('education'),
-            upload_date=r['upload_date']
+            upload_date=r['upload_date'],
+            current_location=r.get('current_location'),
+            preferred_locations=r.get('preferred_locations', []),
+            current_salary=r.get('current_salary'),
+            expected_salary=r.get('expected_salary'),
+            notice_period=r.get('notice_period'),
+            availability=r.get('availability'),
+            source=r.get('source', 'admin_upload')
         )
         for r in resumes
     ]
