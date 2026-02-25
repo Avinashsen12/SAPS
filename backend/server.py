@@ -861,7 +861,7 @@ async def get_match_results(jd_id: str, min_score: float = 0, include_explanatio
     
     results = []
     for match in matches:
-        resume = await db.resumes.find_one({" id": match['resume_id']}, {"_id": 0})
+        resume = await db.resumes.find_one({"id": match['resume_id']}, {"_id": 0})
         if resume:
             match_response = MatchResultResponse(
                 resume_id=match['resume_id'],
