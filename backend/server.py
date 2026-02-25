@@ -326,28 +326,17 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> D
     jd_good_to_have = [s.lower() for s in jd.get('good_to_have_skills', [])]
     jd_certs = [c.lower() for c in jd.get('certifications', [])]
     
-    # Improved skill matching - check for partial matches and related terms
-    def skills_match(resume_skill, jd_skill):
-        # Exact match
-        if resume_skill == jd_skill or jd_skill in resume_skill or resume_skill in jd_skill:
-            return True
-        # Remove common suffixes and check
-        resume_base = resume_skill.replace(' skills', '').replace('skills', '').strip()
-        jd_base = jd_skill.replace(' skills', '').replace('skills', '').strip()
-        if resume_base == jd_base or jd_base in resume_base or resume_base in jd_base:
-            return True
-        return False
-    
     if jd_required:
-        for jd_skill in jd_required:
-            matched = False
-            for resume_skill in resume_skills + resume_tools:
-                if skills_match(resume_skill, jd_skill):
-                    explanation['matched_skills'].append(jd_skill)
-                    matched = True
-                    break
-            if not matched:
-                explanation['missing_skills'].append(jd_skill)
+        # Use AI-powered skill matching for better results
+        ai_match = await ai_skill_matcher(
+            resume_skills + resume_tools,
+            jd_required
+        )
+        
+        explanation['matched_skills'] = ai_match.get('matched_skills', [])
+        explanation['missing_skills'] = ai_match.get('missing_skills', [])
+        explanation['match_explanations'] = ai_match.get('match_explanations', {})
+        explanation['ai_reasoning'] = ai_match.get('overall_reasoning', '')
         
         required_matches = len(explanation['matched_skills'])
         scores['skill_score'] = (required_matches / len(jd_required)) * 40
