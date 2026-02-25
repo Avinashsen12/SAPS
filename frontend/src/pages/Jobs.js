@@ -198,6 +198,71 @@ const Jobs = () => {
       />
 
       <div className="p-8">
+        {matchResults && (
+          <Card className="bg-white border border-slate-200 p-6 mb-6" data-testid="match-results-card">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-bold font-heading text-slate-900">Matching Candidates Found</h2>
+                <p className="text-sm text-slate-500 mt-1">Candidates that match your uploaded jobs</p>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setMatchResults(null)} data-testid="close-match-results">
+                <X size={20} />
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {matchResults.map((result, idx) => (
+                <div key={idx} className="border border-slate-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <h3 className="font-bold text-slate-900">{result.job.title}</h3>
+                      <StatusBadge status={result.job.status} />
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`/jobs/${result.job.id}`)}
+                      data-testid={`view-job-${result.job.id}`}
+                    >
+                      <ExternalLink size={14} className="mr-1" />
+                      View All Matches
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {result.matches.slice(0, 5).map((match) => (
+                      <div key={match.resume_id} className="bg-slate-50 rounded p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="font-semibold text-slate-900">{match.resume_name}</p>
+                          <span className={`font-mono font-bold ${
+                            match.total_score >= 80 ? 'text-green-700' :
+                            match.total_score >= 60 ? 'text-yellow-700' :
+                            'text-orange-700'
+                          }`}>
+                            {match.total_score.toFixed(1)}%
+                          </span>
+                        </div>
+                        <ScoreBar score={match.total_score} category={match.category} />
+                        <p className="text-xs text-slate-600 mt-2">
+                          <span className="font-medium">{match.category}</span> • 
+                          Skills: {match.skill_score.toFixed(1)}% • 
+                          Experience: {match.experience_score.toFixed(1)}% • 
+                          Tools: {match.tools_score.toFixed(1)}%
+                        </p>
+                      </div>
+                    ))}
+                    {result.matches.length > 5 && (
+                      <p className="text-sm text-slate-500 text-center pt-2">
+                        +{result.matches.length - 5} more candidates
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
         <div className="mb-6 flex items-center gap-3">
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
