@@ -14,6 +14,8 @@ const Resumes = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [recentOnly, setRecentOnly] = useState(false);
+  const [uploadingZip, setUploadingZip] = useState(false);
+  const [matchResults, setMatchResults] = useState(null);
 
   useEffect(() => {
     fetchResumes();
