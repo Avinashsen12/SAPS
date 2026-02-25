@@ -49,12 +49,87 @@ const Resumes = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       toast.success(`Successfully uploaded ${response.data.length} resume(s)`);
+      
+      // Auto-match and show results
+      const resumeIds = response.data.map(r => r.id);
+      await autoMatchResumes(resumeIds);
+      
       fetchResumes();
     } catch (error) {
       console.error('Error uploading resumes:', error);
       toast.error('Failed to upload resumes');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleZipUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.zip')) {
+      toast.error('Please upload a ZIP file');
+      return;
+    }
+
+    setUploadingZip(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(`${API}/upload-zip`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success(`Successfully uploaded: ${response.data.resumes_uploaded} resume(s)`);
+      
+      // Get uploaded resume IDs and auto-match
+      fetchResumes();
+      const jobsResponse = await axios.get(`${API}/jobs?status=ACTIVE`);
+      if (jobsResponse.data.length > 0) {
+        toast.info('Matching resumes with active jobs...');
+        await axios.post(`${API}/match/run`);
+        toast.success('Matching completed! Check job details for results.');
+      }
+    } catch (error) {
+      console.error('Error uploading ZIP:', error);
+      toast.error('Failed to process ZIP file');
+    } finally {
+      setUploadingZip(false);
+    }
+  };
+
+  const autoMatchResumes = async (resumeIds) => {
+    try {
+      const jobsResponse = await axios.get(`${API}/jobs?status=ACTIVE`);
+      if (jobsResponse.data.length === 0) {
+        toast.info('No active jobs to match against');
+        return;
+      }
+      
+      toast.info('Finding matching jobs...');
+      await axios.post(`${API}/match/run`);
+      
+      // Fetch match results for the uploaded resumes
+      const allMatches = [];
+      for (const jd of jobsResponse.data) {
+        const matchRes = await axios.get(`${API}/match/results/${jd.id}?min_score=50`);
+        const resumeMatches = matchRes.data.filter(m => resumeIds.includes(m.resume_id));
+        if (resumeMatches.length > 0) {
+          allMatches.push({
+            job: jd,
+            matches: resumeMatches
+          });
+        }
+      }
+      
+      if (allMatches.length > 0) {
+        setMatchResults(allMatches);
+        toast.success(`Found ${allMatches.length} matching job(s)!`);
+      } else {
+        toast.info('No matches found with score ≥ 50%');
+      }
+    } catch (error) {
+      console.error('Error matching resumes:', error);
     }
   };
 
