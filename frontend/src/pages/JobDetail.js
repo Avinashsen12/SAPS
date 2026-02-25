@@ -12,6 +12,13 @@ import {
 import Header from '@/components/Header';
 import StatusBadge from '@/components/StatusBadge';
 import ScoreBar from '@/components/ScoreBar';
+import MatchExplanation from '@/components/MatchExplanation';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft, PlayCircle, Trash2, Mail, FileText, Eye } from 'lucide-react';
