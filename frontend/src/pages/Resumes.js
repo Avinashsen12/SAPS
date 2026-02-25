@@ -194,12 +194,15 @@ const Resumes = () => {
       return;
     }
 
+    setLoadingMatches(prev => ({...prev, [resumeId]: true}));
     try {
-      const response = await axios.get(`${API}/resumes/${resumeId}/matching-jobs?min_score=50`);
+      const response = await axios.get(`${API}/resumes/${resumeId}/matching-jobs?min_score=40`);
       setExpandedMatches(prev => ({...prev, [resumeId]: response.data}));
     } catch (error) {
       console.error('Error fetching matching jobs:', error);
       toast.error('Failed to load matching jobs');
+    } finally {
+      setLoadingMatches(prev => ({...prev, [resumeId]: false}));
     }
   };
 
