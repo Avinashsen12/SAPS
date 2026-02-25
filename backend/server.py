@@ -84,6 +84,13 @@ class ResumeResponse(BaseModel):
     location: Optional[str] = None
     education: Optional[str] = None
     upload_date: str
+    current_location: Optional[str] = None
+    preferred_locations: List[str] = Field(default_factory=list)
+    current_salary: Optional[str] = None
+    expected_salary: Optional[str] = None
+    notice_period: Optional[str] = None
+    availability: Optional[str] = None
+    source: Optional[str] = "admin_upload"
 
 class JobDescriptionCreate(BaseModel):
     title: str
