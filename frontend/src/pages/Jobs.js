@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import StatusBadge from '@/components/StatusBadge';
-import { Plus, Briefcase, ArrowRight } from 'lucide-react';
+import { Plus, Briefcase, ArrowRight, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
