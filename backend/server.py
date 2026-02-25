@@ -218,6 +218,46 @@ Return only the JSON object, no additional text."""
         logging.error(f"Error parsing resume with AI: {e}")
         return {}
 
+async def parse_jd_with_ai(raw_text: str) -> Dict[str, Any]:
+    try:
+        llm_key = os.environ.get('EMERGENT_LLM_KEY')
+        chat = LlmChat(
+            api_key=llm_key,
+            session_id=str(uuid.uuid4()),
+            system_message="You are an expert job description parser. Extract structured information from job descriptions accurately."
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+        
+        prompt = f"""Parse the following job description and extract structured information. Return ONLY valid JSON with these exact fields:
+{{
+  "title": "job title",
+  "description": "full job description text",
+  "required_skills": ["list of required skills"],
+  "good_to_have_skills": ["list of good to have skills"],
+  "min_experience": numeric value in years or null,
+  "max_experience": numeric value in years or null,
+  "industry": "industry/domain or null",
+  "location": "location or null",
+  "certifications": ["list of required certifications"]
+}}
+
+Job Description text:
+{raw_text[:4000]}
+
+Return only the JSON object, no additional text."""
+        
+        message = UserMessage(text=prompt)
+        response = await chat.send_message(message)
+        
+        json_match = re.search(r'\{[^}]+\}', response.replace('\n', ' '), re.DOTALL)
+        if json_match:
+            parsed = json.loads(json_match.group())
+            return parsed
+        
+        return json.loads(response)
+    except Exception as e:
+        logging.error(f"Error parsing JD with AI: {e}")
+        return {}
+
 async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> Dict[str, float]:
     scores = {
         "skill_score": 0.0,
