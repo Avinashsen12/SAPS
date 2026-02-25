@@ -17,6 +17,8 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [uploading, setUploading] = useState(false);
+  const [uploadingZip, setUploadingZip] = useState(false);
+  const [matchResults, setMatchResults] = useState(null);
 
   useEffect(() => {
     fetchJobs();
