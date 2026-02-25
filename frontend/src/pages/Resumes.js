@@ -460,37 +460,66 @@ const Resumes = () => {
                     {expandedMatches[resume.id] && (
                       <tr className="bg-slate-50">
                         <td colSpan="6" className="px-4 py-4">
-                          <div className="flex items-start gap-2 mb-2">
+                          <div className="flex items-start gap-2">
                             <Briefcase size={16} className="text-brand-accent mt-1" />
                             <div className="flex-1">
-                              <p className="font-semibold text-slate-900 mb-2">Matching Job Descriptions</p>
-                              {expandedMatches[resume.id].length === 0 ? (
-                                <p className="text-sm text-slate-500">No matching jobs found (score ≥ 50%)</p>
+                              <p className="font-semibold text-slate-900 mb-3">Matching Job Descriptions (Score ≥ 40%)</p>
+                              {loadingMatches[resume.id] ? (
+                                <p className="text-sm text-slate-500">Loading matches...</p>
+                              ) : expandedMatches[resume.id].length === 0 ? (
+                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                  <p className="text-sm text-amber-800 font-medium mb-2">No matches found (score ≥ 40%)</p>
+                                  <p className="text-xs text-amber-700">
+                                    Consider adding more relevant skills or updating your resume to match active job requirements.
+                                  </p>
+                                </div>
                               ) : (
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                   {expandedMatches[resume.id].map((match, idx) => (
                                     <div
                                       key={idx}
-                                      className="bg-white border border-slate-200 rounded p-3 flex items-center justify-between hover:border-brand-accent/50 transition-colors cursor-pointer"
-                                      onClick={() => window.open(`/jobs/${match.jd_id}`, '_blank')}
+                                      className="bg-white border border-slate-200 rounded-lg p-4 hover:border-brand-accent/50 transition-colors"
                                     >
-                                      <div className="flex-1">
-                                        <p className="font-medium text-slate-900">{match.jd_title}</p>
-                                        <p className="text-xs text-slate-600 mt-1">
-                                          <span className="font-medium">{match.category}</span> • 
-                                          Skills: {match.skill_score}% • 
-                                          Experience: {match.experience_score}%
-                                        </p>
-                                      </div>
-                                      <div className="flex items-center gap-3">
-                                        <span className={`font-mono text-lg font-bold ${
-                                          match.total_score >= 80 ? 'text-green-700' :
-                                          match.total_score >= 60 ? 'text-yellow-700' :
-                                          'text-orange-700'
-                                        }`}>
-                                          {match.total_score}%
-                                        </span>
-                                        <ExternalLink size={16} className="text-slate-400" />
+                                      <div className="flex items-start justify-between mb-2">
+                                        <div className="flex-1">
+                                          <div className="flex items-center gap-2 mb-1">
+                                            <p className="font-semibold text-slate-900">{match.jd_title}</p>
+                                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                              match.total_score >= 80 ? 'bg-green-100 text-green-700' :
+                                              match.total_score >= 60 ? 'bg-yellow-100 text-yellow-700' :
+                                              match.total_score >= 50 ? 'bg-orange-100 text-orange-700' :
+                                              'bg-red-100 text-red-700'
+                                            }`}>
+                                              {match.category}
+                                            </span>
+                                          </div>
+                                          <p className="text-xs text-slate-600">
+                                            Skills: {match.skill_score}% • Experience: {match.experience_score}%
+                                          </p>
+                                          {match.explanation && match.explanation.suggestion && (
+                                            <div className="mt-2 bg-amber-50 border-l-2 border-amber-400 p-2 text-xs text-amber-800">
+                                              💡 <strong>Tip:</strong> {match.explanation.suggestion}
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="flex items-center gap-3 ml-4">
+                                          <span className={`font-mono text-xl font-bold ${
+                                            match.total_score >= 80 ? 'text-green-700' :
+                                            match.total_score >= 60 ? 'text-yellow-700' :
+                                            match.total_score >= 50 ? 'text-orange-700' :
+                                            'text-red-700'
+                                          }`}>
+                                            {match.total_score}%
+                                          </span>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => window.open(`/jobs/${match.jd_id}`, '_blank')}
+                                          >
+                                            <ExternalLink size={14} className="mr-1" />
+                                            View Job
+                                          </Button>
+                                        </div>
                                       </div>
                                     </div>
                                   ))}
