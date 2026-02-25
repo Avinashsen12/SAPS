@@ -276,16 +276,13 @@ const Resumes = () => {
           <Card className="bg-white border border-slate-200 p-12 text-center" data-testid="empty-resumes-state">
             <FileText size={48} className="mx-auto text-slate-300 mb-4" />
             <p className="text-slate-500 mb-4">No resumes uploaded yet</p>
-            <label htmlFor="file-upload-empty">
-              <Button
-                as="span"
-                variant="outline"
-                className="cursor-pointer"
-                data-testid="upload-first-resume-button"
-              >
-                Upload Your First Resume
-              </Button>
-            </label>
+            <Button
+              variant="outline"
+              onClick={() => document.getElementById('file-upload-empty').click()}
+              data-testid="upload-first-resume-button"
+            >
+              Upload Your First Resume
+            </Button>
             <input
               id="file-upload-empty"
               type="file"
