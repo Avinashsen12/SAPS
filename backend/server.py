@@ -326,20 +326,51 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any], use_
     jd_good_to_have = [s.lower() for s in jd.get('good_to_have_skills', [])]
     jd_certs = [c.lower() for c in jd.get('certifications', [])]
     
+    # Fast keyword matching first
+    def skills_match(resume_skill, jd_skill):
+        if resume_skill == jd_skill or jd_skill in resume_skill or resume_skill in jd_skill:
+            return True
+        resume_base = resume_skill.replace(' skills', '').replace('skills', '').strip()
+        jd_base = jd_skill.replace(' skills', '').replace('skills', '').strip()
+        if resume_base == jd_base or jd_base in resume_base or resume_base in jd_base:
+            return True
+        return False
+    
     if jd_required:
-        # Use AI-powered skill matching for better results
-        ai_match = await ai_skill_matcher(
-            resume_skills + resume_tools,
-            jd_required
-        )
-        
-        explanation['matched_skills'] = ai_match.get('matched_skills', [])
-        explanation['missing_skills'] = ai_match.get('missing_skills', [])
-        explanation['match_explanations'] = ai_match.get('match_explanations', {})
-        explanation['ai_reasoning'] = ai_match.get('overall_reasoning', '')
+        if use_ai:
+            # Use AI for better matching (slower but smarter)
+            ai_match = await ai_skill_matcher(resume_skills + resume_tools, jd_required)
+            explanation['matched_skills'] = ai_match.get('matched_skills', [])
+            explanation['missing_skills'] = ai_match.get('missing_skills', [])
+            explanation['match_explanations'] = ai_match.get('match_explanations', {})
+            explanation['ai_reasoning'] = ai_match.get('overall_reasoning', '')
+        else:
+            # Fast keyword matching
+            for jd_skill in jd_required:
+                matched = False
+                for resume_skill in resume_skills + resume_tools:
+                    if skills_match(resume_skill, jd_skill):
+                        explanation['matched_skills'].append(jd_skill)
+                        matched = True
+                        break
+                if not matched:
+                    explanation['missing_skills'].append(jd_skill)
         
         required_matches = len(explanation['matched_skills'])
         scores['skill_score'] = (required_matches / len(jd_required)) * 40
+        
+        # Add suggestions if score is low
+        current_total_estimate = scores['skill_score'] + 20 + 15  # Base estimate with exp + tools
+        if current_total_estimate < 50:
+            skills_needed_for_50 = []
+            points_needed = 50 - current_total_estimate
+            skills_to_add = int((points_needed / 40) * len(jd_required)) + 1
+            
+            missing_count = len(explanation['missing_skills'])
+            if missing_count > 0:
+                skills_to_suggest = min(skills_to_add, missing_count, 3)
+                skills_needed_for_50 = explanation['missing_skills'][:skills_to_suggest]
+                explanation['suggestion'] = f"To reach 50%+ match, consider adding these skills: {', '.join(skills_needed_for_50)}"
     else:
         scores['skill_score'] = 40
     
