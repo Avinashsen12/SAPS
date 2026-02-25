@@ -142,6 +142,7 @@ class MatchResultResponse(BaseModel):
     skill_score: float
     experience_score: float
     tools_score: float
+    match_explanation: Optional[Dict[str, Any]] = None
 
 class DashboardStats(BaseModel):
     total_resumes: int
