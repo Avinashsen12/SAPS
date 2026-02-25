@@ -58,11 +58,26 @@ const JobDetail = () => {
 
   const fetchMatches = async () => {
     try {
-      const response = await axios.get(`${API}/match/results/${id}?min_score=${minScore}`);
+      const response = await axios.get(`${API}/match/results/${id}?min_score=${minScore}&include_explanation=true`);
       setMatches(response.data);
     } catch (error) {
       console.error('Error fetching matches:', error);
     }
+  };
+
+  const handleViewResume = async (resumeId) => {
+    try {
+      const response = await axios.get(`${API}/resumes/${resumeId}/raw`);
+      setResumeContent(response.data);
+      setShowResumeDialog(true);
+    } catch (error) {
+      console.error('Error fetching resume:', error);
+      toast.error('Failed to load resume');
+    }
+  };
+
+  const toggleMatchExpansion = (matchId) => {
+    setExpandedMatch(expandedMatch === matchId ? null : matchId);
   };
 
   const handleRunMatching = async () => {
