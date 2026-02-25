@@ -156,11 +156,38 @@ class DashboardStats(BaseModel):
 
 def extract_text_from_pdf(file_bytes: bytes) -> str:
     try:
+        # First try normal text extraction
         with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
             text = ""
             for page in pdf.pages:
-                text += page.extract_text() or ""
-            return text
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+            
+            # If text extracted successfully, return it
+            if text.strip():
+                logging.info(f"PDF text extraction successful: {len(text)} chars")
+                return text
+            
+            # If no text found, try OCR
+            logging.info("No text in PDF, attempting OCR...")
+        
+        # Convert PDF to images and perform OCR
+        images = convert_from_bytes(file_bytes, dpi=300)
+        ocr_text = ""
+        
+        for i, image in enumerate(images):
+            logging.info(f"Performing OCR on page {i+1}/{len(images)}")
+            page_text = pytesseract.image_to_string(image, lang='eng')
+            ocr_text += page_text + "\n"
+        
+        if ocr_text.strip():
+            logging.info(f"OCR successful: {len(ocr_text)} chars extracted")
+            return ocr_text
+        else:
+            logging.warning("OCR returned no text")
+            return ""
+            
     except Exception as e:
         logging.error(f"Error extracting PDF: {e}")
         return ""
