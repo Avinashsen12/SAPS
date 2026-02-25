@@ -966,7 +966,7 @@ async def run_matching(jd_id: Optional[str] = None):
     return {"message": "Matching completed successfully", "matches_created": matches_created}
 
 @api_router.get("/match/results/{jd_id}", response_model=List[MatchResultResponse])
-async def get_match_results(jd_id: str, min_score: float = 0, include_explanation: bool = False):
+async def get_match_results(jd_id: str, min_score: float = 0, include_explanation: bool = False, use_ai: bool = False):
     matches = await db.matches.find(
         {"jd_id": jd_id, "total_score": {"$gte": min_score}},
         {"_id": 0}
@@ -988,10 +988,10 @@ async def get_match_results(jd_id: str, min_score: float = 0, include_explanatio
             )
             
             if include_explanation:
-                # Recalculate for explanation
+                # Recalculate with optional AI for explanation
                 jd = await db.job_descriptions.find_one({"id": jd_id}, {"_id": 0})
                 if jd:
-                    scores = await calculate_match_score(resume, jd)
+                    scores = await calculate_match_score(resume, jd, use_ai=use_ai)
                     match_response.match_explanation = scores.get('explanation', {})
             
             results.append(match_response)
