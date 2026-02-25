@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Upload, FileText, Trash2, Calendar, Mail, MapPin, X, ExternalLink } from 'lucide-react';
+import { Upload, FileText, Trash2, Calendar, Mail, MapPin, X, ExternalLink, Eye, Download, ChevronDown, ChevronRight, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
