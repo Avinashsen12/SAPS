@@ -270,6 +270,16 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> D
         "keyword_score": 0.0
     }
     
+    explanation = {
+        "matched_skills": [],
+        "missing_skills": [],
+        "experience_detail": "",
+        "matched_tools": [],
+        "industry_match": False,
+        "location_match": False,
+        "matched_certifications": []
+    }
+    
     resume_skills = [s.lower() for s in resume.get('skills', [])]
     resume_tools = [t.lower() for t in resume.get('tools', [])]
     resume_certs = [c.lower() for c in resume.get('certifications', [])]
@@ -279,7 +289,13 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> D
     jd_certs = [c.lower() for c in jd.get('certifications', [])]
     
     if jd_required:
-        required_matches = sum(1 for skill in jd_required if skill in resume_skills or skill in resume_tools)
+        for skill in jd_required:
+            if skill in resume_skills or skill in resume_tools:
+                explanation['matched_skills'].append(skill)
+            else:
+                explanation['missing_skills'].append(skill)
+        
+        required_matches = len(explanation['matched_skills'])
         scores['skill_score'] = (required_matches / len(jd_required)) * 40
     else:
         scores['skill_score'] = 40
@@ -288,16 +304,24 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> D
         exp_diff = resume['experience_years'] - jd['min_experience']
         if exp_diff >= 0:
             scores['experience_score'] = 20
+            explanation['experience_detail'] = f"Has {resume['experience_years']}y experience (required: {jd['min_experience']}y) ✓"
         elif exp_diff >= -2:
             scores['experience_score'] = 15
+            explanation['experience_detail'] = f"Has {resume['experience_years']}y experience, slightly below {jd['min_experience']}y requirement"
         else:
             scores['experience_score'] = 10
+            explanation['experience_detail'] = f"Has {resume['experience_years']}y experience, below {jd['min_experience']}y requirement"
     else:
         scores['experience_score'] = 20
+        explanation['experience_detail'] = "Experience requirement met"
     
     all_jd_skills = jd_required + jd_good_to_have
     if all_jd_skills:
-        tool_matches = sum(1 for tool in resume_tools if any(jd_skill in tool or tool in jd_skill for jd_skill in all_jd_skills))
+        for tool in resume_tools:
+            if any(jd_skill in tool or tool in jd_skill for jd_skill in all_jd_skills):
+                explanation['matched_tools'].append(tool)
+        
+        tool_matches = len(explanation['matched_tools'])
         scores['tools_score'] = min((tool_matches / len(resume_tools) if resume_tools else 0) * 15, 15)
     else:
         scores['tools_score'] = 15
@@ -305,13 +329,19 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> D
     if jd.get('industry') and resume.get('industry'):
         if jd['industry'].lower() in resume['industry'].lower() or resume['industry'].lower() in jd['industry'].lower():
             scores['industry_score'] = 10
+            explanation['industry_match'] = True
         else:
             scores['industry_score'] = 5
     else:
         scores['industry_score'] = 10
+        explanation['industry_match'] = True
     
     if jd_certs and resume_certs:
-        cert_matches = sum(1 for cert in jd_certs if cert in resume_certs)
+        for cert in jd_certs:
+            if cert in resume_certs:
+                explanation['matched_certifications'].append(cert)
+        
+        cert_matches = len(explanation['matched_certifications'])
         scores['certification_score'] = (cert_matches / len(jd_certs)) * 5
     else:
         scores['certification_score'] = 5
@@ -319,16 +349,19 @@ async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> D
     if jd.get('location') and resume.get('location'):
         if jd['location'].lower() in resume['location'].lower() or resume['location'].lower() in jd['location'].lower() or 'remote' in jd['location'].lower():
             scores['location_score'] = 5
+            explanation['location_match'] = True
         else:
             scores['location_score'] = 2
     else:
         scores['location_score'] = 5
+        explanation['location_match'] = True
     
     resume_text = ' '.join(resume_skills + resume_tools).lower()
     jd_text = ' '.join(jd_required + jd_good_to_have).lower()
     common_words = set(resume_text.split()) & set(jd_text.split())
     scores['keyword_score'] = min(len(common_words) * 0.5, 5)
     
+    scores['explanation'] = explanation
     return scores
 
 def categorize_score(total_score: float) -> MatchCategory:
