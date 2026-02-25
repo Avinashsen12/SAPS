@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [activeJobs, setActiveJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [uploadingZip, setUploadingZip] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
