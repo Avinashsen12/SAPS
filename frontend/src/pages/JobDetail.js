@@ -419,6 +419,97 @@ const JobDetail = () => {
           )}
         </Card>
       </div>
+
+      <Dialog open={showResumeDialog} onOpenChange={setShowResumeDialog}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Resume: {resumeContent?.name || 'Unknown'}</DialogTitle>
+          </DialogHeader>
+          {resumeContent && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-lg">
+                <div>
+                  <p className="text-xs text-slate-500">File Name</p>
+                  <p className="font-semibold">{resumeContent.filename}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Candidate Name</p>
+                  <p className="font-semibold">{resumeContent.name || 'N/A'}</p>
+                </div>
+              </div>
+
+              {resumeContent.parsed_data && (
+                <div className="border border-slate-200 rounded-lg p-4">
+                  <h3 className="font-bold text-slate-900 mb-3">Parsed Information</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    {resumeContent.parsed_data.email && (
+                      <div>
+                        <p className="text-slate-500">Email</p>
+                        <p className="font-medium">{resumeContent.parsed_data.email}</p>
+                      </div>
+                    )}
+                    {resumeContent.parsed_data.phone && (
+                      <div>
+                        <p className="text-slate-500">Phone</p>
+                        <p className="font-medium">{resumeContent.parsed_data.phone}</p>
+                      </div>
+                    )}
+                    {resumeContent.parsed_data.location && (
+                      <div>
+                        <p className="text-slate-500">Location</p>
+                        <p className="font-medium">{resumeContent.parsed_data.location}</p>
+                      </div>
+                    )}
+                    {resumeContent.parsed_data.experience_years && (
+                      <div>
+                        <p className="text-slate-500">Experience</p>
+                        <p className="font-medium">{resumeContent.parsed_data.experience_years} years</p>
+                      </div>
+                    )}
+                    {resumeContent.parsed_data.education && (
+                      <div className="col-span-2">
+                        <p className="text-slate-500">Education</p>
+                        <p className="font-medium">{resumeContent.parsed_data.education}</p>
+                      </div>
+                    )}
+                    {resumeContent.parsed_data.skills && resumeContent.parsed_data.skills.length > 0 && (
+                      <div className="col-span-2">
+                        <p className="text-slate-500 mb-2">Skills</p>
+                        <div className="flex flex-wrap gap-2">
+                          {resumeContent.parsed_data.skills.map((skill, idx) => (
+                            <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {resumeContent.parsed_data.tools && resumeContent.parsed_data.tools.length > 0 && (
+                      <div className="col-span-2">
+                        <p className="text-slate-500 mb-2">Tools & Technologies</p>
+                        <div className="flex flex-wrap gap-2">
+                          {resumeContent.parsed_data.tools.map((tool, idx) => (
+                            <span key={idx} className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-full">
+                              {tool}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="border border-slate-200 rounded-lg p-4">
+                <h3 className="font-bold text-slate-900 mb-3">Full Resume Text</h3>
+                <div className="bg-slate-50 p-4 rounded text-sm whitespace-pre-wrap font-mono text-slate-700 max-h-96 overflow-y-auto">
+                  {resumeContent.raw_text || 'No text content available'}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
