@@ -664,6 +664,20 @@ async def get_resume(resume_id: str):
     
     return Resume(**resume)
 
+@api_router.get("/resumes/{resume_id}/raw")
+async def get_resume_raw_text(resume_id: str):
+    resume = await db.resumes.find_one({"id": resume_id}, {"_id": 0})
+    if not resume:
+        raise HTTPException(status_code=404, detail="Resume not found")
+    
+    return {
+        "id": resume['id'],
+        "name": resume.get('name'),
+        "filename": resume['filename'],
+        "raw_text": resume.get('raw_text', ''),
+        "parsed_data": resume.get('parsed_data', {})
+    }
+
 @api_router.delete("/resumes/{resume_id}")
 async def delete_resume(resume_id: str):
     result = await db.resumes.delete_one({"id": resume_id})
