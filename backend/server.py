@@ -762,7 +762,7 @@ async def get_resume_raw_text(resume_id: str):
     }
 
 @api_router.get("/resumes/{resume_id}/matching-jobs")
-async def get_matching_jobs_for_resume(resume_id: str, min_score: float = 50):
+async def get_matching_jobs_for_resume(resume_id: str, min_score: float = 50, use_ai: bool = False):
     """Get top matching jobs for a specific resume"""
     resume = await db.resumes.find_one({"id": resume_id}, {"_id": 0})
     if not resume:
@@ -773,7 +773,7 @@ async def get_matching_jobs_for_resume(resume_id: str, min_score: float = 50):
     
     matches = []
     for jd in active_jds:
-        scores = await calculate_match_score(resume, jd)
+        scores = await calculate_match_score(resume, jd, use_ai=use_ai)
         total_score = (
             scores['skill_score'] + 
             scores['experience_score'] + 
