@@ -730,6 +730,45 @@ async def get_resume_raw_text(resume_id: str):
         "parsed_data": resume.get('parsed_data', {})
     }
 
+@api_router.get("/resumes/{resume_id}/matching-jobs")
+async def get_matching_jobs_for_resume(resume_id: str, min_score: float = 50):
+    """Get top matching jobs for a specific resume"""
+    resume = await db.resumes.find_one({"id": resume_id}, {"_id": 0})
+    if not resume:
+        raise HTTPException(status_code=404, detail="Resume not found")
+    
+    # Get all active jobs
+    active_jds = await db.job_descriptions.find({"status": "ACTIVE"}, {"_id": 0}).to_list(100)
+    
+    matches = []
+    for jd in active_jds:
+        scores = await calculate_match_score(resume, jd)
+        total_score = (
+            scores['skill_score'] + 
+            scores['experience_score'] + 
+            scores['tools_score'] + 
+            scores['industry_score'] + 
+            scores['certification_score'] + 
+            scores['location_score'] + 
+            scores['keyword_score']
+        )
+        
+        if total_score >= min_score:
+            category = categorize_score(total_score)
+            matches.append({
+                "jd_id": jd['id'],
+                "jd_title": jd['title'],
+                "total_score": round(total_score, 2),
+                "category": category.value,
+                "skill_score": round(scores['skill_score'], 2),
+                "experience_score": round(scores['experience_score'], 2),
+                "explanation": scores.get('explanation', {})
+            })
+    
+    # Sort by score descending
+    matches.sort(key=lambda x: x['total_score'], reverse=True)
+    return matches[:5]  # Return top 5 matches
+
 @api_router.delete("/resumes/{resume_id}")
 async def delete_resume(resume_id: str):
     result = await db.resumes.delete_one({"id": resume_id})
