@@ -168,6 +168,26 @@ const Resumes = () => {
             >
               {recentOnly ? 'Show All' : 'Recent Only (≤3 months)'}
             </Button>
+            <label htmlFor="zip-upload-resumes">
+              <Button
+                as="span"
+                variant="outline"
+                className="cursor-pointer"
+                disabled={uploadingZip}
+                data-testid="upload-zip-resumes-button"
+              >
+                <Upload size={16} className="mr-2" />
+                {uploadingZip ? 'Processing ZIP...' : 'Upload ZIP'}
+              </Button>
+            </label>
+            <input
+              id="zip-upload-resumes"
+              type="file"
+              accept=".zip"
+              onChange={handleZipUpload}
+              className="hidden"
+              data-testid="zip-upload-resumes-input"
+            />
             <label htmlFor="file-upload">
               <Button
                 as="span"
