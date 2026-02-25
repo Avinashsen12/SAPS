@@ -144,6 +144,71 @@ const JobDetail = () => {
   const lowMatch = getCategoryMatches('Low Match');
   const notSuitable = getCategoryMatches('Not Suitable');
 
+  const renderMatchCard = (match, color) => (
+    <div key={match.resume_id} className="border border-slate-200 rounded-lg p-4" data-testid={`match-card-${match.resume_id}`}>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1">
+          <p className="font-semibold text-slate-900">{match.resume_name}</p>
+          {match.resume_email && (
+            <div className="flex items-center gap-1 text-sm text-slate-600 mt-1">
+              <Mail size={12} />
+              {match.resume_email}
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleViewResume(match.resume_id)}
+            data-testid={`view-resume-${match.resume_id}`}
+          >
+            <Eye size={14} className="mr-1" />
+            View
+          </Button>
+          <span className="font-mono text-lg font-bold" style={{ color }}>
+            {match.total_score.toFixed(1)}%
+          </span>
+        </div>
+      </div>
+      <ScoreBar score={match.total_score} category={match.category} />
+      <div className="grid grid-cols-3 gap-3 mt-3 text-xs">
+        <div>
+          <span className="text-slate-500">Skills:</span>
+          <span className="ml-1 font-semibold text-slate-900">{match.skill_score.toFixed(1)}%</span>
+        </div>
+        <div>
+          <span className="text-slate-500">Experience:</span>
+          <span className="ml-1 font-semibold text-slate-900">{match.experience_score.toFixed(1)}%</span>
+        </div>
+        <div>
+          <span className="text-slate-500">Tools:</span>
+          <span className="ml-1 font-semibold text-slate-900">{match.tools_score.toFixed(1)}%</span>
+        </div>
+      </div>
+      
+      {match.match_explanation && (
+        <div className="mt-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs"
+            onClick={() => toggleMatchExpansion(match.resume_id)}
+            data-testid={`toggle-explanation-${match.resume_id}`}
+          >
+            {expandedMatch === match.resume_id ? '▼ Hide Details' : '▶ Why This Match?'}
+          </Button>
+          
+          {expandedMatch === match.resume_id && (
+            <div className="mt-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <MatchExplanation explanation={match.match_explanation} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div>
       <Header
