@@ -55,6 +55,7 @@ class Resume(BaseModel):
     location: Optional[str] = None
     education: Optional[str] = None
     raw_text: str
+    file_content: Optional[bytes] = None
     upload_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     parsed_data: Optional[Dict[str, Any]] = None
 
