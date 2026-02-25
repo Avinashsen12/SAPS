@@ -1,11 +1,21 @@
 import React from 'react';
-import { CheckCircle, XCircle, AlertCircle, Brain } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Brain, Lightbulb } from 'lucide-react';
 
 const MatchExplanation = ({ explanation }) => {
   if (!explanation) return null;
 
   return (
     <div className="space-y-3 text-sm">
+      {explanation.suggestion && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <p className="font-semibold text-amber-900 flex items-center gap-2 mb-2">
+            <Lightbulb size={16} />
+            Suggestion to Improve Match
+          </p>
+          <p className="text-amber-800 text-sm">{explanation.suggestion}</p>
+        </div>
+      )}
+
       {explanation.ai_reasoning && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p className="font-semibold text-blue-900 flex items-center gap-2 mb-2">
