@@ -1,0 +1,33 @@
+Senior Full Stack Developer - TechCorp
+
+Job Description:
+We are seeking a talented Senior Full Stack Developer to join our dynamic team. The ideal candidate will be responsible for developing and maintaining both front-end and back-end applications.
+
+Responsibilities:
+- Design and develop scalable web applications using modern frameworks
+- Collaborate with cross-functional teams to define and implement new features
+- Write clean, maintainable, and efficient code
+- Participate in code reviews and provide constructive feedback
+- Troubleshoot and debug applications
+
+Required Skills and Qualifications:
+- 5+ years of experience in full-stack development
+- Proficiency in JavaScript, TypeScript, React, and Node.js
+- Experience with databases (PostgreSQL, MongoDB)
+- Familiarity with cloud platforms (AWS, Azure)
+- Strong understanding of RESTful APIs and microservices
+- Experience with version control systems (Git)
+
+Good to Have Skills:
+- Experience with Docker and containerization
+- Knowledge of CI/CD pipelines
+- Familiarity with GraphQL
+- Experience with testing frameworks (Jest, Cypress)
+
+Experience Required: 5-8 years
+Industry: Technology
+Location: San Francisco, CA (Remote friendly)
+
+Certifications Preferred:
+- AWS Certified Solutions Architect
+- Certified Kubernetes Administrator
