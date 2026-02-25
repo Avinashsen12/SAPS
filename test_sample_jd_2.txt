@@ -1,0 +1,32 @@
+DevOps Engineer Position
+
+Job Description:
+Join our infrastructure team as a DevOps Engineer where you'll be responsible for designing, implementing, and maintaining our cloud infrastructure and deployment pipelines.
+
+Key Responsibilities:
+- Build and maintain CI/CD pipelines
+- Manage cloud infrastructure using Infrastructure as Code
+- Monitor system performance and implement improvements
+- Ensure high availability and scalability of applications
+- Collaborate with development teams on deployment strategies
+
+Required Qualifications:
+- 3+ years of experience in DevOps or infrastructure roles
+- Strong experience with AWS, Docker, and Kubernetes
+- Proficiency in scripting languages (Python, Bash)
+- Experience with Infrastructure as Code tools (Terraform, CloudFormation)
+- Knowledge of monitoring tools (Prometheus, Grafana, ELK stack)
+- Understanding of networking and security best practices
+
+Good to Have:
+- Experience with service mesh technologies
+- Knowledge of database administration
+- Familiarity with security scanning tools
+
+Experience Required: 3-6 years
+Industry: Technology
+Location: Remote
+
+Certifications Required:
+- AWS Certified DevOps Engineer
+- Certified Kubernetes Administrator
