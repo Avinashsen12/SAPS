@@ -60,6 +60,14 @@ class Resume(BaseModel):
     file_content: Optional[bytes] = None
     upload_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     parsed_data: Optional[Dict[str, Any]] = None
+    # Additional candidate details
+    current_location: Optional[str] = None
+    preferred_locations: List[str] = Field(default_factory=list)
+    current_salary: Optional[str] = None
+    expected_salary: Optional[str] = None
+    notice_period: Optional[str] = None
+    availability: Optional[str] = None
+    source: str = "admin_upload"  # "admin_upload" or "candidate_portal"
 
 class ResumeResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
