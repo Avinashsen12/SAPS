@@ -355,72 +355,149 @@ const Resumes = () => {
               </thead>
               <tbody>
                 {resumes.map((resume) => (
-                  <tr
-                    key={resume.id}
-                    className="border-b last:border-0 hover:bg-slate-50/50 transition-colors"
-                    data-testid={`resume-row-${resume.id}`}
-                  >
-                    <td className="px-4 py-4">
-                      <div>
-                        <p className="font-medium text-slate-900">{resume.name || 'N/A'}</p>
-                        <p className="text-xs text-slate-500">{resume.filename}</p>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="space-y-1">
-                        {resume.email && (
-                          <div className="flex items-center gap-1 text-xs text-slate-600">
-                            <Mail size={12} />
-                            {resume.email}
-                          </div>
-                        )}
-                        {resume.location && (
-                          <div className="flex items-center gap-1 text-xs text-slate-600">
-                            <MapPin size={12} />
-                            {resume.location}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {resume.skills.slice(0, 3).map((skill, idx) => (
-                          <span
-                            key={idx}
-                            className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full"
+                  <React.Fragment key={resume.id}>
+                    <tr
+                      className="border-b hover:bg-slate-50/50 transition-colors"
+                      data-testid={`resume-row-${resume.id}`}
+                    >
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => toggleMatchingJobs(resume.id)}
+                            className="text-slate-400 hover:text-brand-accent transition-colors"
                           >
-                            {skill}
-                          </span>
-                        ))}
-                        {resume.skills.length > 3 && (
-                          <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full">
-                            +{resume.skills.length - 3}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <span className="font-mono text-sm">
-                        {resume.experience_years ? `${resume.experience_years}y` : 'N/A'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="flex items-center gap-1 text-xs text-slate-600">
-                        <Calendar size={12} />
-                        {new Date(resume.upload_date).toLocaleDateString()}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(resume.id)}
-                        data-testid={`delete-resume-${resume.id}`}
-                      >
-                        <Trash2 size={16} className="text-red-500" />
-                      </Button>
-                    </td>
-                  </tr>
+                            {expandedMatches[resume.id] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                          </button>
+                          <div>
+                            <p className="font-medium text-slate-900">{resume.name || 'N/A'}</p>
+                            <p className="text-xs text-slate-500">{resume.filename}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="space-y-1">
+                          {resume.email && (
+                            <div className="flex items-center gap-1 text-xs text-slate-600">
+                              <Mail size={12} />
+                              {resume.email}
+                            </div>
+                          )}
+                          {resume.location && (
+                            <div className="flex items-center gap-1 text-xs text-slate-600">
+                              <MapPin size={12} />
+                              {resume.location}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {(expandedSkills[resume.id] ? resume.skills : resume.skills.slice(0, 3)).map((skill, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {resume.skills.length > 3 && (
+                            <button
+                              onClick={() => toggleSkills(resume.id)}
+                              className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full hover:bg-slate-200 transition-colors"
+                            >
+                              {expandedSkills[resume.id] ? 'Show Less' : `+${resume.skills.length - 3} more`}
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="font-mono text-sm">
+                          {resume.experience_years ? `${resume.experience_years}y` : 'N/A'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-1 text-xs text-slate-600">
+                          <Calendar size={12} />
+                          {new Date(resume.upload_date).toLocaleDateString()}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewResume(resume.id)}
+                            data-testid={`view-resume-${resume.id}`}
+                            title="View Resume"
+                          >
+                            <Eye size={16} className="text-blue-500" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDownloadResume(resume)}
+                            data-testid={`download-resume-${resume.id}`}
+                            title="Download Resume"
+                          >
+                            <Download size={16} className="text-green-500" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(resume.id)}
+                            data-testid={`delete-resume-${resume.id}`}
+                            title="Delete Resume"
+                          >
+                            <Trash2 size={16} className="text-red-500" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                    {expandedMatches[resume.id] && (
+                      <tr className="bg-slate-50">
+                        <td colSpan="6" className="px-4 py-4">
+                          <div className="flex items-start gap-2 mb-2">
+                            <Briefcase size={16} className="text-brand-accent mt-1" />
+                            <div className="flex-1">
+                              <p className="font-semibold text-slate-900 mb-2">Matching Job Descriptions</p>
+                              {expandedMatches[resume.id].length === 0 ? (
+                                <p className="text-sm text-slate-500">No matching jobs found (score ≥ 50%)</p>
+                              ) : (
+                                <div className="space-y-2">
+                                  {expandedMatches[resume.id].map((match, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="bg-white border border-slate-200 rounded p-3 flex items-center justify-between hover:border-brand-accent/50 transition-colors cursor-pointer"
+                                      onClick={() => window.open(`/jobs/${match.jd_id}`, '_blank')}
+                                    >
+                                      <div className="flex-1">
+                                        <p className="font-medium text-slate-900">{match.jd_title}</p>
+                                        <p className="text-xs text-slate-600 mt-1">
+                                          <span className="font-medium">{match.category}</span> • 
+                                          Skills: {match.skill_score}% • 
+                                          Experience: {match.experience_score}%
+                                        </p>
+                                      </div>
+                                      <div className="flex items-center gap-3">
+                                        <span className={`font-mono text-lg font-bold ${
+                                          match.total_score >= 80 ? 'text-green-700' :
+                                          match.total_score >= 60 ? 'text-yellow-700' :
+                                          'text-orange-700'
+                                        }`}>
+                                          {match.total_score}%
+                                        </span>
+                                        <ExternalLink size={16} className="text-slate-400" />
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
