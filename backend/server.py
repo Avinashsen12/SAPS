@@ -820,7 +820,7 @@ async def run_matching(jd_id: Optional[str] = None):
     return {"message": "Matching completed successfully", "matches_created": matches_created}
 
 @api_router.get("/match/results/{jd_id}", response_model=List[MatchResultResponse])
-async def get_match_results(jd_id: str, min_score: float = 0):
+async def get_match_results(jd_id: str, min_score: float = 0, include_explanation: bool = False):
     matches = await db.matches.find(
         {"jd_id": jd_id, "total_score": {"$gte": min_score}},
         {"_id": 0}
@@ -828,9 +828,9 @@ async def get_match_results(jd_id: str, min_score: float = 0):
     
     results = []
     for match in matches:
-        resume = await db.resumes.find_one({"id": match['resume_id']}, {"_id": 0})
+        resume = await db.resumes.find_one({" id": match['resume_id']}, {"_id": 0})
         if resume:
-            results.append(MatchResultResponse(
+            match_response = MatchResultResponse(
                 resume_id=match['resume_id'],
                 resume_name=resume.get('name', 'Unknown'),
                 resume_email=resume.get('email'),
@@ -839,7 +839,16 @@ async def get_match_results(jd_id: str, min_score: float = 0):
                 skill_score=match['skill_score'],
                 experience_score=match['experience_score'],
                 tools_score=match['tools_score']
-            ))
+            )
+            
+            if include_explanation:
+                # Recalculate for explanation
+                jd = await db.job_descriptions.find_one({"id": jd_id}, {"_id": 0})
+                if jd:
+                    scores = await calculate_match_score(resume, jd)
+                    match_response.match_explanation = scores.get('explanation', {})
+            
+            results.append(match_response)
     
     return results
 
