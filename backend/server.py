@@ -817,7 +817,17 @@ async def run_matching(jd_id: Optional[str] = None):
         
         for resume in resumes:
             scores = await calculate_match_score(resume, jd)
-            total_score = sum(scores.values())
+            
+            # Calculate total score excluding explanation
+            total_score = (
+                scores['skill_score'] + 
+                scores['experience_score'] + 
+                scores['tools_score'] + 
+                scores['industry_score'] + 
+                scores['certification_score'] + 
+                scores['location_score'] + 
+                scores['keyword_score']
+            )
             category = categorize_score(total_score)
             
             match = MatchResult(
