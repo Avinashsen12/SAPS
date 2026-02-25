@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import StatCard from '@/components/StatCard';
 import Header from '@/components/Header';
-import { FileText, Briefcase, TrendingUp, Clock, ArrowRight } from 'lucide-react';
+import { FileText, Briefcase, TrendingUp, Clock, ArrowRight, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import StatusBadge from '@/components/StatusBadge';
 
