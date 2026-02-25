@@ -387,39 +387,7 @@ const JobDetail = () => {
                     <span className="text-sm text-slate-500">({moderatelySuitable.length})</span>
                   </div>
                   <div className="space-y-2">
-                    {moderatelySuitable.map((match) => (
-                      <div key={match.resume_id} className="border border-slate-200 rounded-lg p-4" data-testid={`match-card-${match.resume_id}`}>
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <p className="font-semibold text-slate-900">{match.resume_name}</p>
-                            {match.resume_email && (
-                              <div className="flex items-center gap-1 text-sm text-slate-600 mt-1">
-                                <Mail size={12} />
-                                {match.resume_email}
-                              </div>
-                            )}
-                          </div>
-                          <span className="font-mono text-lg font-bold" style={{ color: '#854D0E' }}>
-                            {match.total_score.toFixed(1)}%
-                          </span>
-                        </div>
-                        <ScoreBar score={match.total_score} category={match.category} />
-                        <div className="grid grid-cols-3 gap-3 mt-3 text-xs">
-                          <div>
-                            <span className="text-slate-500">Skills:</span>
-                            <span className="ml-1 font-semibold text-slate-900">{match.skill_score.toFixed(1)}%</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-500">Experience:</span>
-                            <span className="ml-1 font-semibold text-slate-900">{match.experience_score.toFixed(1)}%</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-500">Tools:</span>
-                            <span className="ml-1 font-semibold text-slate-900">{match.tools_score.toFixed(1)}%</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                    {moderatelySuitable.map((match) => renderMatchCard(match, '#854D0E'))}
                   </div>
                 </div>
               )}
