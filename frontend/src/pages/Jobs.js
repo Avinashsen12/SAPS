@@ -144,18 +144,15 @@ const Jobs = () => {
         subtitle={`${jobs.length} job description(s)`}
         action={
           <div className="flex items-center gap-3">
-            <label htmlFor="zip-upload-jobs">
-              <Button
-                as="span"
-                variant="outline"
-                className="cursor-pointer"
-                disabled={uploadingZip}
-                data-testid="upload-zip-jobs-button"
-              >
-                <Upload size={16} className="mr-2" />
-                {uploadingZip ? 'Processing ZIP...' : 'Upload ZIP'}
-              </Button>
-            </label>
+            <Button
+              variant="outline"
+              onClick={() => document.getElementById('zip-upload-jobs').click()}
+              disabled={uploadingZip}
+              data-testid="upload-zip-jobs-button"
+            >
+              <Upload size={16} className="mr-2" />
+              {uploadingZip ? 'Processing ZIP...' : 'Upload ZIP'}
+            </Button>
             <input
               id="zip-upload-jobs"
               type="file"
@@ -164,18 +161,15 @@ const Jobs = () => {
               className="hidden"
               data-testid="zip-upload-jobs-input"
             />
-            <label htmlFor="jd-file-upload">
-              <Button
-                as="span"
-                variant="outline"
-                className="cursor-pointer"
-                disabled={uploading}
-                data-testid="upload-jds-button"
-              >
-                <Upload size={16} className="mr-2" />
-                {uploading ? 'Uploading...' : 'Upload JDs'}
-              </Button>
-            </label>
+            <Button
+              variant="outline"
+              onClick={() => document.getElementById('jd-file-upload').click()}
+              disabled={uploading}
+              data-testid="upload-jds-button"
+            >
+              <Upload size={16} className="mr-2" />
+              {uploading ? 'Uploading...' : 'Upload JDs'}
+            </Button>
             <input
               id="jd-file-upload"
               type="file"
