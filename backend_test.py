@@ -398,11 +398,15 @@ class SAPSAPITester:
         self.test_resume_list()
         self.test_recent_resume_filter()
         
+        # NEW FEATURE TESTS
+        self.test_bulk_jd_upload()
+        self.test_zip_upload_auto_detection()
+        
         self.test_job_creation()
         self.test_job_list()
         self.test_job_status_update()
         
-        # AI and matching tests
+        # AI and matching tests (verify existing functionality still works)
         self.test_ai_matching_algorithm()
         self.test_match_results_filtering()
         self.test_recent_matching()
