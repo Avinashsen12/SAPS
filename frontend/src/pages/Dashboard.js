@@ -78,30 +78,6 @@ const Dashboard = () => {
       <Header 
         title="Dashboard" 
         subtitle="Overview of your recruitment pipeline"
-        action={
-          <div>
-            <label htmlFor="zip-upload">
-              <Button
-                as="span"
-                variant="outline"
-                className="cursor-pointer"
-                disabled={uploadingZip}
-                data-testid="upload-zip-button"
-              >
-                <Upload size={16} className="mr-2" />
-                {uploadingZip ? 'Processing...' : 'Upload ZIP (Resumes & JDs)'}
-              </Button>
-            </label>
-            <input
-              id="zip-upload"
-              type="file"
-              accept=".zip"
-              onChange={handleZipUpload}
-              className="hidden"
-              data-testid="zip-upload-input"
-            />
-          </div>
-        }
       />
       
       <div className="p-8 space-y-8">
