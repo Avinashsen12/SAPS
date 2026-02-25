@@ -281,6 +281,79 @@ class SAPSAPITester:
         except Exception as e:
             return self.log_test("Recent Resume Matching", False, f"- Error: {str(e)}")
     
+    def test_bulk_jd_upload(self):
+        """Test NEW FEATURE: bulk JD file upload with AI parsing"""
+        try:
+            # Test with JD text files
+            sample_jd_1 = open('/app/test_sample_jd_1.txt', 'rb')
+            sample_jd_2 = open('/app/test_sample_jd_2.txt', 'rb')
+            
+            files = [
+                ('files', ('senior_fullstack_jd.txt', sample_jd_1, 'text/plain')),
+                ('files', ('devops_engineer_jd.txt', sample_jd_2, 'text/plain'))
+            ]
+            
+            response = requests.post(f"{API_BASE}/jobs/upload-bulk", files=files, timeout=120)
+            success = response.status_code == 200
+            
+            if success:
+                data = response.json()
+                jd_ids = [jd['id'] for jd in data]
+                self.job_ids.extend(jd_ids)
+                details = f"- Uploaded {len(data)} JDs with AI parsing, Sample title: {data[0]['title'] if data else 'None'}"
+            else:
+                details = f"- Status: {response.status_code}, Response: {response.text[:100]}"
+            
+            sample_jd_1.close()
+            sample_jd_2.close()
+            return self.log_test("NEW: Bulk JD Upload with AI Parsing", success, details)
+            
+        except Exception as e:
+            return self.log_test("NEW: Bulk JD Upload with AI Parsing", False, f"- Error: {str(e)}")
+    
+    def test_zip_upload_auto_detection(self):
+        """Test NEW FEATURE: ZIP file upload with auto file type detection"""
+        try:
+            import zipfile
+            import tempfile
+            import os
+            
+            # Create a temporary ZIP file with mixed resumes and JDs
+            with tempfile.NamedTemporaryFile(suffix='.zip', delete=False) as zip_file:
+                zip_path = zip_file.name
+                
+                with zipfile.ZipFile(zip_path, 'w') as zf:
+                    # Add resume files
+                    zf.write('/app/test_sample_resume_1.txt', 'resume_1.txt')
+                    zf.write('/app/test_sample_resume_2.txt', 'resume_2.txt')
+                    # Add JD files
+                    zf.write('/app/test_sample_jd_1.txt', 'job_description_1.txt')
+                    zf.write('/app/test_sample_jd_2.txt', 'job_description_2.txt')
+            
+            # Upload the ZIP file
+            with open(zip_path, 'rb') as zip_content:
+                files = {'file': ('test_mixed.zip', zip_content, 'application/zip')}
+                response = requests.post(f"{API_BASE}/upload-zip", files=files, timeout=120)
+                
+            success = response.status_code == 200
+            
+            if success:
+                data = response.json()
+                resumes_count = data.get('resumes_uploaded', 0)
+                jds_count = data.get('jds_uploaded', 0)
+                details = f"- Auto-detected and processed: {resumes_count} resumes, {jds_count} JDs"
+                # Verify auto-detection worked (should separate files correctly)
+                success = resumes_count > 0 and jds_count > 0
+            else:
+                details = f"- Status: {response.status_code}, Response: {response.text[:100]}"
+            
+            # Cleanup
+            os.unlink(zip_path)
+            return self.log_test("NEW: ZIP Upload with Auto File Type Detection", success, details)
+            
+        except Exception as e:
+            return self.log_test("NEW: ZIP Upload with Auto File Type Detection", False, f"- Error: {str(e)}")
+
     def test_delete_operations(self):
         """Test delete operations for cleanup"""
         success_count = 0
