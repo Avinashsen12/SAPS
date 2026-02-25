@@ -405,6 +405,192 @@ async def upload_bulk_resumes(files: List[UploadFile] = File(...)):
     
     return uploaded_resumes
 
+@api_router.post("/jobs/upload-bulk", response_model=List[JobDescriptionResponse])
+async def upload_bulk_jds(files: List[UploadFile] = File(...)):
+    uploaded_jds = []
+    
+    for file in files:
+        try:
+            file_bytes = await file.read()
+            filename = file.filename.lower()
+            
+            if filename.endswith('.pdf'):
+                raw_text = extract_text_from_pdf(file_bytes)
+            elif filename.endswith('.docx'):
+                raw_text = extract_text_from_docx(file_bytes)
+            elif filename.endswith('.txt'):
+                raw_text = extract_text_from_txt(file_bytes)
+            else:
+                continue
+            
+            if not raw_text.strip():
+                continue
+            
+            parsed_data = await parse_jd_with_ai(raw_text)
+            
+            jd = JobDescription(
+                title=parsed_data.get('title', 'Untitled Position'),
+                description=parsed_data.get('description', raw_text[:500]),
+                required_skills=parsed_data.get('required_skills', []),
+                good_to_have_skills=parsed_data.get('good_to_have_skills', []),
+                min_experience=parsed_data.get('min_experience'),
+                max_experience=parsed_data.get('max_experience'),
+                industry=parsed_data.get('industry'),
+                location=parsed_data.get('location'),
+                certifications=parsed_data.get('certifications', [])
+            )
+            
+            doc = jd.model_dump()
+            doc['created_date'] = doc['created_date'].isoformat()
+            doc['status'] = doc['status'].value
+            await db.job_descriptions.insert_one(doc)
+            
+            uploaded_jds.append(JobDescriptionResponse(
+                id=jd.id,
+                title=jd.title,
+                required_skills=jd.required_skills,
+                good_to_have_skills=jd.good_to_have_skills,
+                min_experience=jd.min_experience,
+                max_experience=jd.max_experience,
+                industry=jd.industry,
+                location=jd.location,
+                certifications=jd.certifications,
+                description=jd.description,
+                status=jd.status.value,
+                created_date=jd.created_date.isoformat(),
+                match_count=0
+            ))
+            
+        except Exception as e:
+            logging.error(f"Error processing JD file {file.filename}: {e}")
+            continue
+    
+    return uploaded_jds
+
+@api_router.post("/upload-zip")
+async def upload_zip_file(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith('.zip'):
+        raise HTTPException(status_code=400, detail="Only ZIP files are supported")
+    
+    resumes_uploaded = []
+    jds_uploaded = []
+    
+    try:
+        file_bytes = await file.read()
+        
+        with tempfile.TemporaryDirectory() as temp_dir:
+            zip_path = Path(temp_dir) / "upload.zip"
+            zip_path.write_bytes(file_bytes)
+            
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(temp_dir)
+            
+            for root, dirs, files in os.walk(temp_dir):
+                for filename in files:
+                    if filename.startswith('.') or filename.startswith('__MACOSX'):
+                        continue
+                    
+                    file_path = Path(root) / filename
+                    filename_lower = filename.lower()
+                    
+                    if not (filename_lower.endswith('.pdf') or filename_lower.endswith('.docx') or filename_lower.endswith('.txt')):
+                        continue
+                    
+                    try:
+                        with open(file_path, 'rb') as f:
+                            file_content = f.read()
+                        
+                        if filename_lower.endswith('.pdf'):
+                            raw_text = extract_text_from_pdf(file_content)
+                        elif filename_lower.endswith('.docx'):
+                            raw_text = extract_text_from_docx(file_content)
+                        elif filename_lower.endswith('.txt'):
+                            raw_text = extract_text_from_txt(file_content)
+                        else:
+                            continue
+                        
+                        if not raw_text.strip():
+                            continue
+                        
+                        is_resume = await detect_file_type(raw_text)
+                        
+                        if is_resume:
+                            parsed_data = await parse_resume_with_ai(raw_text)
+                            resume = Resume(
+                                filename=filename,
+                                name=parsed_data.get('name'),
+                                email=parsed_data.get('email'),
+                                phone=parsed_data.get('phone'),
+                                skills=parsed_data.get('skills', []),
+                                experience_years=parsed_data.get('experience_years'),
+                                tools=parsed_data.get('tools', []),
+                                certifications=parsed_data.get('certifications', []),
+                                industry=parsed_data.get('industry'),
+                                location=parsed_data.get('location'),
+                                education=parsed_data.get('education'),
+                                raw_text=raw_text,
+                                parsed_data=parsed_data
+                            )
+                            
+                            doc = resume.model_dump()
+                            doc['upload_date'] = doc['upload_date'].isoformat()
+                            await db.resumes.insert_one(doc)
+                            resumes_uploaded.append(resume.name or filename)
+                        else:
+                            parsed_data = await parse_jd_with_ai(raw_text)
+                            jd = JobDescription(
+                                title=parsed_data.get('title', filename.replace('.pdf', '').replace('.docx', '').replace('.txt', '')),
+                                description=parsed_data.get('description', raw_text[:500]),
+                                required_skills=parsed_data.get('required_skills', []),
+                                good_to_have_skills=parsed_data.get('good_to_have_skills', []),
+                                min_experience=parsed_data.get('min_experience'),
+                                max_experience=parsed_data.get('max_experience'),
+                                industry=parsed_data.get('industry'),
+                                location=parsed_data.get('location'),
+                                certifications=parsed_data.get('certifications', [])
+                            )
+                            
+                            doc = jd.model_dump()
+                            doc['created_date'] = doc['created_date'].isoformat()
+                            doc['status'] = doc['status'].value
+                            await db.job_descriptions.insert_one(doc)
+                            jds_uploaded.append(jd.title)
+                    
+                    except Exception as e:
+                        logging.error(f"Error processing file {filename} from ZIP: {e}")
+                        continue
+    
+    except Exception as e:
+        logging.error(f"Error processing ZIP file: {e}")
+        raise HTTPException(status_code=500, detail=f"Error processing ZIP file: {str(e)}")
+    
+    return {
+        "message": "ZIP file processed successfully",
+        "resumes_uploaded": len(resumes_uploaded),
+        "jds_uploaded": len(jds_uploaded),
+        "resume_names": resumes_uploaded,
+        "jd_titles": jds_uploaded
+    }
+
+async def detect_file_type(text: str) -> bool:
+    """Detect if a document is a resume (True) or job description (False)"""
+    text_lower = text.lower()
+    
+    resume_keywords = ['resume', 'cv', 'curriculum vitae', 'education', 'work experience', 'professional experience']
+    jd_keywords = ['job description', 'responsibilities', 'requirements', 'qualifications', 'we are looking for', 'the ideal candidate']
+    
+    resume_score = sum(1 for keyword in resume_keywords if keyword in text_lower)
+    jd_score = sum(1 for keyword in jd_keywords if keyword in text_lower)
+    
+    if resume_score > jd_score:
+        return True
+    elif jd_score > resume_score:
+        return False
+    else:
+        if 'resume' in text_lower or 'cv' in text_lower:
+            return True
+        return True
+
 @api_router.get("/resumes", response_model=List[ResumeResponse])
 async def get_resumes(recent_only: bool = False):
     query = {}
