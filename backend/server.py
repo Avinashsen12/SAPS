@@ -297,7 +297,7 @@ Be generous with matches - if CAD and AutoCAD, consider them matching. If "Mecha
         logging.error(f"Error in AI skill matcher: {e}")
         return {"matched_skills": [], "missing_skills": required_skills, "match_explanations": {}}
 
-async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> Dict[str, float]:
+async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any], use_ai: bool = False) -> Dict[str, float]:
     scores = {
         "skill_score": 0.0,
         "experience_score": 0.0,
