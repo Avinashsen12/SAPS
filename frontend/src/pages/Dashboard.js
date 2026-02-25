@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import { FileText, Briefcase, TrendingUp, Clock, ArrowRight, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import StatusBadge from '@/components/StatusBadge';
+import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
