@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
-import { Upload, FileText, Trash2, Calendar, Mail, MapPin } from 'lucide-react';
+import { Upload, FileText, Trash2, Calendar, Mail, MapPin, X, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
