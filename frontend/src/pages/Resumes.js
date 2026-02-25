@@ -168,18 +168,15 @@ const Resumes = () => {
             >
               {recentOnly ? 'Show All' : 'Recent Only (≤3 months)'}
             </Button>
-            <label htmlFor="zip-upload-resumes">
-              <Button
-                as="span"
-                variant="outline"
-                className="cursor-pointer"
-                disabled={uploadingZip}
-                data-testid="upload-zip-resumes-button"
-              >
-                <Upload size={16} className="mr-2" />
-                {uploadingZip ? 'Processing ZIP...' : 'Upload ZIP'}
-              </Button>
-            </label>
+            <Button
+              variant="outline"
+              onClick={() => document.getElementById('zip-upload-resumes').click()}
+              disabled={uploadingZip}
+              data-testid="upload-zip-resumes-button"
+            >
+              <Upload size={16} className="mr-2" />
+              {uploadingZip ? 'Processing ZIP...' : 'Upload ZIP'}
+            </Button>
             <input
               id="zip-upload-resumes"
               type="file"
@@ -188,17 +185,15 @@ const Resumes = () => {
               className="hidden"
               data-testid="zip-upload-resumes-input"
             />
-            <label htmlFor="file-upload">
-              <Button
-                as="span"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
-                disabled={uploading}
-                data-testid="upload-resumes-button"
-              >
-                <Upload size={16} className="mr-2" />
-                {uploading ? 'Uploading...' : 'Upload Resumes'}
-              </Button>
-            </label>
+            <Button
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={() => document.getElementById('file-upload').click()}
+              disabled={uploading}
+              data-testid="upload-resumes-button"
+            >
+              <Upload size={16} className="mr-2" />
+              {uploading ? 'Uploading...' : 'Upload Resumes'}
+            </Button>
             <input
               id="file-upload"
               type="file"
