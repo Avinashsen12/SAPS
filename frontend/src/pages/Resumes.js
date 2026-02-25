@@ -158,6 +158,50 @@ const Resumes = () => {
     }
   };
 
+  const toggleSkills = (resumeId) => {
+    setExpandedSkills(prev => ({
+      ...prev,
+      [resumeId]: !prev[resumeId]
+    }));
+  };
+
+  const handleViewResume = async (resumeId) => {
+    try {
+      const response = await axios.get(`${API}/resumes/${resumeId}/raw`);
+      setResumeContent(response.data);
+      setShowResumeDialog(true);
+    } catch (error) {
+      console.error('Error fetching resume:', error);
+      toast.error('Failed to load resume');
+    }
+  };
+
+  const handleDownloadResume = (resume) => {
+    const element = document.createElement('a');
+    const file = new Blob([resume.raw_text || 'No content'], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = resume.filename || `${resume.name}_resume.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    toast.success('Resume downloaded');
+  };
+
+  const toggleMatchingJobs = async (resumeId) => {
+    if (expandedMatches[resumeId]) {
+      setExpandedMatches(prev => ({...prev, [resumeId]: null}));
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API}/resumes/${resumeId}/matching-jobs?min_score=50`);
+      setExpandedMatches(prev => ({...prev, [resumeId]: response.data}));
+    } catch (error) {
+      console.error('Error fetching matching jobs:', error);
+      toast.error('Failed to load matching jobs');
+    }
+  };
+
   return (
     <div>
       <Header
