@@ -260,6 +260,43 @@ Return only the JSON object, no additional text."""
         logging.error(f"Error parsing JD with AI: {e}")
         return {}
 
+async def ai_skill_matcher(candidate_skills: List[str], required_skills: List[str]) -> Dict[str, Any]:
+    """Use AI to intelligently match skills even if worded differently"""
+    try:
+        llm_key = os.environ.get('EMERGENT_LLM_KEY')
+        chat = LlmChat(
+            api_key=llm_key,
+            session_id=str(uuid.uuid4()),
+            system_message="You are an expert HR assistant specializing in skill matching."
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+        
+        prompt = f"""Analyze if the candidate's skills match the job requirements. Be smart about synonyms and related skills.
+
+Candidate has: {', '.join(candidate_skills[:20])}
+
+Job requires: {', '.join(required_skills[:15])}
+
+Return ONLY valid JSON:
+{{
+  "matched_skills": [list of required skills that the candidate has or closely matches],
+  "match_explanations": {{"skill_name": "why it matches"}},
+  "missing_skills": [required skills the candidate doesn't have],
+  "overall_reasoning": "brief explanation of the match quality"
+}}
+
+Be generous with matches - if CAD and AutoCAD, consider them matching. If "Mechanical design" and "Mechanical systems knowledge", consider them related."""
+        
+        message = UserMessage(text=prompt)
+        response = await chat.send_message(message)
+        
+        json_match = re.search(r'\{.*\}', response.replace('\n', ' '), re.DOTALL)
+        if json_match:
+            return json.loads(json_match.group())
+        return {"matched_skills": [], "missing_skills": required_skills, "match_explanations": {}}
+    except Exception as e:
+        logging.error(f"Error in AI skill matcher: {e}")
+        return {"matched_skills": [], "missing_skills": required_skills, "match_explanations": {}}
+
 async def calculate_match_score(resume: Dict[str, Any], jd: Dict[str, Any]) -> Dict[str, float]:
     scores = {
         "skill_score": 0.0,
