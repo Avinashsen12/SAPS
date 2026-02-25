@@ -1,0 +1,22 @@
+Michael Chen
+Email: michael.chen@email.com
+Phone: (555) 987-6543
+Location: San Francisco, CA
+
+PROFESSIONAL SUMMARY
+Senior Data Scientist with 6 years of experience in machine learning and AI.
+
+SKILLS
+- Machine Learning: TensorFlow, PyTorch, Scikit-learn
+- Programming: Python, R, SQL
+- Big Data: Spark, Hadoop
+- Cloud: AWS, GCP
+
+EXPERIENCE
+Senior Data Scientist - Tech Solutions Inc (2020-2026)
+- Built ML models for predictive analytics
+- Led team of 4 data scientists
+
+EDUCATION
+Master of Science in Data Science
+Stanford University, 2020
