@@ -162,14 +162,18 @@ const CandidatePortal = () => {
       <img src="/saps-logo.png" alt="" style={watermarkStyle} />
       
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-brand-cyan/20 shadow-lg sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      <div className="bg-white/95 backdrop-blur-md border-b border-brand-cyan/20 shadow-lg sticky top-0 z-50">
+        <div className="w-full px-8 lg:px-16 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <img src="/saps-logo.png" alt="SAPS Logo" className="h-14 w-auto drop-shadow-md" />
+              <img src="/saps-logo.png" alt="SAPS Logo" className="h-16 md:h-20 w-auto drop-shadow-lg" />
+              <div className="hidden sm:block">
+                <h1 className="text-xl md:text-2xl font-bold text-brand-blue">SAPS</h1>
+                <p className="text-xs md:text-sm text-slate-500">Skills and Placement Services</p>
+              </div>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <span className="px-3 py-1.5 bg-gradient-to-r from-brand-cyan/10 to-brand-blue/10 text-brand-blue font-medium rounded-full border border-brand-cyan/30">
+              <span className="px-4 py-2 bg-gradient-to-r from-brand-blue to-brand-cyan text-white font-medium rounded-full shadow-md">
                 Candidate Portal
               </span>
             </div>
@@ -178,25 +182,26 @@ const CandidatePortal = () => {
       </div>
 
       {/* Welcome Section */}
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-orange/10 to-brand-yellow/10 rounded-full text-sm font-medium text-brand-orange mb-6 border border-brand-orange/20">
-            <Sparkles size={16} />
-            AI-Powered Career Matching
+      <div className="w-full px-6 lg:px-16 py-12 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-orange/10 to-brand-yellow/10 rounded-full text-sm font-medium text-brand-orange mb-6 border border-brand-orange/20">
+              <Sparkles size={16} />
+              AI-Powered Career Matching
+            </div>
+            <h2 className="text-4xl sm:text-5xl font-bold font-heading mb-4">
+              <span className="bg-gradient-to-r from-brand-blue via-brand-cyan to-brand-magenta bg-clip-text text-transparent">
+                Welcome to Your Career Journey
+              </span>
+            </h2>
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Join SAPS and let our AI-powered platform match you with the perfect job opportunities.
+              Upload your resume and share your preferences to get started.
+            </p>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold font-heading mb-4">
-            <span className="bg-gradient-to-r from-brand-blue via-brand-cyan to-brand-magenta bg-clip-text text-transparent">
-              Welcome to Your Career Journey
-            </span>
-          </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Join SAPS and let our AI-powered platform match you with the perfect job opportunities.
-            Upload your resume and share your preferences to get started.
-          </p>
-        </div>
 
-        {/* Application Form */}
-        <Card className="bg-white/95 backdrop-blur-sm border-2 border-brand-cyan/20 p-8 shadow-2xl rounded-2xl">
+          {/* Application Form */}
+          <Card className="bg-white/95 backdrop-blur-sm border-2 border-brand-cyan/20 p-8 shadow-2xl rounded-2xl">
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="border-b border-gradient-to-r from-brand-cyan/30 via-brand-blue/20 to-transparent pb-8">
               <div className="flex items-center gap-3 mb-4">
