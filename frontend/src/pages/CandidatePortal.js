@@ -23,11 +23,11 @@ const watermarkStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  opacity: 0.03,
+  opacity: 0.08,
   pointerEvents: 'none',
   zIndex: 0,
-  width: '60%',
-  maxWidth: '600px',
+  width: '90%',
+  maxWidth: '1200px',
 };
 
 const CandidatePortal = () => {
