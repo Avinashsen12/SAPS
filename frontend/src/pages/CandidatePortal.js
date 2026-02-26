@@ -189,8 +189,8 @@ const CandidatePortal = () => {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-bold font-heading text-slate-900 flex items-center gap-2">
-                <MapPin size={20} className="text-brand-accent" />
+              <h3 className="text-xl font-bold font-heading text-brand-blue mb-2 flex items-center gap-2">
+                <MapPin size={20} className="text-brand-cyan" />
                 Location Preferences
               </h3>
               
