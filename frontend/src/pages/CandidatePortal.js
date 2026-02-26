@@ -299,7 +299,7 @@ const CandidatePortal = () => {
               <Button
                 type="submit"
                 disabled={uploading}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-12 text-lg"
+                className="w-full bg-brand-blue text-white hover:bg-brand-blue/90 h-12 text-lg shadow-lg"
               >
                 {uploading ? (
                   <span className="flex items-center gap-2">
