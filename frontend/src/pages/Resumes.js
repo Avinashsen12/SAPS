@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Upload, FileText, Trash2, Calendar, Mail, MapPin, X, ExternalLink, Eye, Download, ChevronDown, ChevronRight, Briefcase } from 'lucide-react';
+import { Upload, FileText, Trash2, Calendar, Mail, MapPin, X, ExternalLink, Eye, Download, ChevronDown, ChevronRight, Briefcase, Sparkles, Users } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -207,7 +207,7 @@ const Resumes = () => {
   };
 
   return (
-    <div>
+    <div className="bg-gradient-to-br from-slate-50 via-brand-cyan/5 to-brand-magenta/5 min-h-screen">
       <Header
         title="Resume Database"
         subtitle={`${resumes.length} resume(s) in database`}
@@ -216,6 +216,7 @@ const Resumes = () => {
             <Button
               variant="outline"
               onClick={() => setRecentOnly(!recentOnly)}
+              className={recentOnly ? 'bg-brand-cyan/10 border-brand-cyan text-brand-cyan' : 'border-slate-200'}
               data-testid="filter-recent-button"
             >
               {recentOnly ? 'Show All' : 'Recent Only (≤3 months)'}
@@ -224,9 +225,10 @@ const Resumes = () => {
               variant="outline"
               onClick={() => document.getElementById('zip-upload-resumes').click()}
               disabled={uploadingZip}
+              className="border-brand-orange/30 hover:border-brand-orange hover:bg-brand-orange/10"
               data-testid="upload-zip-resumes-button"
             >
-              <Upload size={16} className="mr-2" />
+              <Upload size={16} className="mr-2 text-brand-orange" />
               {uploadingZip ? 'Processing ZIP...' : 'Upload ZIP'}
             </Button>
             <input
@@ -238,7 +240,7 @@ const Resumes = () => {
               data-testid="zip-upload-resumes-input"
             />
             <Button
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="bg-gradient-to-r from-brand-blue to-brand-cyan text-white hover:from-brand-cyan hover:to-brand-blue shadow-lg"
               onClick={() => document.getElementById('file-upload').click()}
               disabled={uploading}
               data-testid="upload-resumes-button"
@@ -261,22 +263,32 @@ const Resumes = () => {
 
       <div className="p-8">
         {matchResults && (
-          <Card className="bg-white border border-slate-200 p-6 mb-6" data-testid="match-results-card">
+          <Card className="bg-white/90 backdrop-blur-sm border-2 border-brand-cyan/20 p-6 mb-6 shadow-lg rounded-xl" data-testid="match-results-card">
             <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-bold font-heading text-slate-900">Matching Jobs Found</h2>
-                <p className="text-sm text-slate-500 mt-1">Jobs that match your uploaded resumes</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-magenta to-pink-400 flex items-center justify-center">
+                  <Sparkles size={20} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold font-heading text-slate-900">Matching Jobs Found</h2>
+                  <p className="text-sm text-slate-500">Jobs that match your uploaded resumes</p>
+                </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setMatchResults(null)} data-testid="close-match-results">
+              <Button variant="ghost" size="sm" onClick={() => setMatchResults(null)} className="hover:bg-red-50 hover:text-red-500" data-testid="close-match-results">
                 <X size={20} />
               </Button>
             </div>
             
             <div className="space-y-4">
               {matchResults.map((result, idx) => (
-                <div key={idx} className="border border-slate-200 rounded-lg p-4">
+                <div key={idx} className="border-2 border-slate-100 rounded-xl p-4 hover:border-brand-magenta/30 transition-colors">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
+                      <div className={`w-2 h-2 rounded-full ${
+                        idx === 0 ? 'bg-brand-cyan' : 
+                        idx === 1 ? 'bg-brand-orange' : 
+                        'bg-brand-magenta'
+                      }`} />
                       <h3 className="font-bold text-slate-900">{result.job.title}</h3>
                       <StatusBadge status={result.job.status} />
                     </div>
@@ -284,6 +296,7 @@ const Resumes = () => {
                       variant="outline"
                       size="sm"
                       onClick={() => window.open(`/jobs/${result.job.id}`, '_blank')}
+                      className="border-brand-cyan/30 text-brand-cyan hover:bg-brand-cyan hover:text-white"
                       data-testid={`view-job-${result.job.id}`}
                     >
                       <ExternalLink size={14} className="mr-1" />
@@ -293,23 +306,23 @@ const Resumes = () => {
                   
                   <div className="space-y-2">
                     {result.matches.map((match) => (
-                      <div key={match.resume_id} className="bg-slate-50 rounded p-3">
+                      <div key={match.resume_id} className="bg-gradient-to-r from-slate-50 to-brand-magenta/5 rounded-lg p-3">
                         <div className="flex items-center justify-between mb-2">
                           <p className="font-semibold text-slate-900">{match.resume_name}</p>
                           <span className={`font-mono font-bold ${
-                            match.total_score >= 80 ? 'text-green-700' :
-                            match.total_score >= 60 ? 'text-yellow-700' :
-                            'text-orange-700'
+                            match.total_score >= 80 ? 'text-green-600' :
+                            match.total_score >= 60 ? 'text-brand-yellow' :
+                            'text-brand-orange'
                           }`}>
                             {match.total_score.toFixed(1)}%
                           </span>
                         </div>
                         <ScoreBar score={match.total_score} category={match.category} />
                         <p className="text-xs text-slate-600 mt-2">
-                          <span className="font-medium">{match.category}</span> • 
-                          Skills: {match.skill_score.toFixed(1)}% • 
-                          Experience: {match.experience_score.toFixed(1)}% • 
-                          Tools: {match.tools_score.toFixed(1)}%
+                          <span className="font-medium text-brand-blue">{match.category}</span> • 
+                          Skills: <span className="text-brand-cyan">{match.skill_score.toFixed(1)}%</span> • 
+                          Experience: <span className="text-brand-orange">{match.experience_score.toFixed(1)}%</span> • 
+                          Tools: <span className="text-brand-magenta">{match.tools_score.toFixed(1)}%</span>
                         </p>
                       </div>
                     ))}
@@ -322,15 +335,20 @@ const Resumes = () => {
 
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <div className="text-slate-500">Loading resumes...</div>
+            <div className="flex items-center gap-3 text-slate-500">
+              <div className="w-6 h-6 border-2 border-brand-cyan border-t-transparent rounded-full animate-spin"></div>
+              Loading resumes...
+            </div>
           </div>
         ) : resumes.length === 0 ? (
-          <Card className="bg-white border border-slate-200 p-12 text-center" data-testid="empty-resumes-state">
-            <FileText size={48} className="mx-auto text-slate-300 mb-4" />
-            <p className="text-slate-500 mb-4">No resumes uploaded yet</p>
+          <Card className="bg-white/80 backdrop-blur-sm border-2 border-brand-cyan/20 p-12 text-center rounded-xl" data-testid="empty-resumes-state">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-brand-cyan/20 to-brand-blue/20 rounded-2xl flex items-center justify-center mb-4">
+              <Users size={40} className="text-brand-cyan" />
+            </div>
+            <p className="text-slate-600 mb-4 font-medium">No resumes uploaded yet</p>
             <Button
-              variant="outline"
               onClick={() => document.getElementById('file-upload-empty').click()}
+              className="bg-gradient-to-r from-brand-blue to-brand-cyan text-white hover:from-brand-cyan hover:to-brand-blue"
               data-testid="upload-first-resume-button"
             >
               Upload Your First Resume
@@ -345,33 +363,39 @@ const Resumes = () => {
             />
           </Card>
         ) : (
-          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-sm border-2 border-slate-100 rounded-xl overflow-hidden shadow-lg">
             <table className="w-full text-sm text-left" data-testid="resumes-table">
-              <thead className="bg-slate-50 text-slate-500 font-medium">
+              <thead className="bg-gradient-to-r from-brand-blue/5 to-brand-cyan/5 text-slate-600 font-medium">
                 <tr>
-                  <th className="px-4 py-3 border-b">Candidate Name</th>
-                  <th className="px-4 py-3 border-b">Contact</th>
-                  <th className="px-4 py-3 border-b">Skills</th>
-                  <th className="px-4 py-3 border-b">Experience</th>
-                  <th className="px-4 py-3 border-b">Upload Date</th>
-                  <th className="px-4 py-3 border-b">Actions</th>
+                  <th className="px-4 py-4 border-b border-slate-100">Candidate Name</th>
+                  <th className="px-4 py-4 border-b border-slate-100">Contact</th>
+                  <th className="px-4 py-4 border-b border-slate-100">Skills</th>
+                  <th className="px-4 py-4 border-b border-slate-100">Experience</th>
+                  <th className="px-4 py-4 border-b border-slate-100">Upload Date</th>
+                  <th className="px-4 py-4 border-b border-slate-100">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {resumes.map((resume) => (
+                {resumes.map((resume, index) => (
                   <React.Fragment key={resume.id}>
                     <tr
-                      className="border-b hover:bg-slate-50/50 transition-colors"
+                      className="border-b border-slate-50 hover:bg-gradient-to-r hover:from-white hover:to-brand-cyan/5 transition-all"
                       data-testid={`resume-row-${resume.id}`}
                     >
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => toggleMatchingJobs(resume.id)}
-                            className="text-slate-400 hover:text-brand-accent transition-colors"
+                            className="text-slate-400 hover:text-brand-cyan transition-colors"
                           >
                             {expandedMatches[resume.id] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                           </button>
+                          <div className={`w-2 h-2 rounded-full ${
+                            index % 4 === 0 ? 'bg-brand-blue' : 
+                            index % 4 === 1 ? 'bg-brand-cyan' : 
+                            index % 4 === 2 ? 'bg-brand-orange' : 
+                            'bg-brand-magenta'
+                          }`} />
                           <div>
                             <p className="font-medium text-slate-900">{resume.name || 'N/A'}</p>
                             <p className="text-xs text-slate-500">{resume.filename}</p>
@@ -399,7 +423,11 @@ const Resumes = () => {
                           {(expandedSkills[resume.id] ? resume.skills : resume.skills.slice(0, 3)).map((skill, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full"
+                              className={`px-2 py-0.5 text-xs rounded-full ${
+                                idx % 3 === 0 ? 'bg-brand-blue/10 text-brand-blue' : 
+                                idx % 3 === 1 ? 'bg-brand-cyan/10 text-brand-cyan' : 
+                                'bg-brand-orange/10 text-brand-orange'
+                              }`}
                             >
                               {skill}
                             </span>
@@ -407,7 +435,7 @@ const Resumes = () => {
                           {resume.skills.length > 3 && (
                             <button
                               onClick={() => toggleSkills(resume.id)}
-                              className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full hover:bg-slate-200 transition-colors"
+                              className="px-2 py-0.5 bg-brand-magenta/10 text-brand-magenta text-xs rounded-full hover:bg-brand-magenta/20 transition-colors font-medium"
                             >
                               {expandedSkills[resume.id] ? 'Show Less' : `+${resume.skills.length - 3} more`}
                             </button>
@@ -433,8 +461,9 @@ const Resumes = () => {
                             onClick={() => handleViewResume(resume.id)}
                             data-testid={`view-resume-${resume.id}`}
                             title="View Resume"
+                            className="hover:bg-brand-blue/10"
                           >
-                            <Eye size={16} className="text-blue-500" />
+                            <Eye size={16} className="text-brand-blue" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -442,8 +471,9 @@ const Resumes = () => {
                             onClick={() => handleDownloadResume(resume)}
                             data-testid={`download-resume-${resume.id}`}
                             title="Download Resume"
+                            className="hover:bg-green-50"
                           >
-                            <Download size={16} className="text-green-500" />
+                            <Download size={16} className="text-green-600" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -451,6 +481,7 @@ const Resumes = () => {
                             onClick={() => handleDelete(resume.id)}
                             data-testid={`delete-resume-${resume.id}`}
                             title="Delete Resume"
+                            className="hover:bg-red-50"
                           >
                             <Trash2 size={16} className="text-red-500" />
                           </Button>
@@ -458,16 +489,21 @@ const Resumes = () => {
                       </td>
                     </tr>
                     {expandedMatches[resume.id] && (
-                      <tr className="bg-slate-50">
+                      <tr className="bg-gradient-to-r from-brand-cyan/5 to-brand-magenta/5">
                         <td colSpan="6" className="px-4 py-4">
                           <div className="flex items-start gap-2">
-                            <Briefcase size={16} className="text-brand-accent mt-1" />
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-cyan to-brand-blue flex items-center justify-center">
+                              <Briefcase size={14} className="text-white" />
+                            </div>
                             <div className="flex-1">
                               <p className="font-semibold text-slate-900 mb-3">Matching Job Descriptions (Score ≥ 40%)</p>
                               {loadingMatches[resume.id] ? (
-                                <p className="text-sm text-slate-500">Loading matches...</p>
+                                <div className="flex items-center gap-2 text-sm text-slate-500">
+                                  <div className="w-4 h-4 border-2 border-brand-cyan border-t-transparent rounded-full animate-spin"></div>
+                                  Loading matches...
+                                </div>
                               ) : expandedMatches[resume.id].length === 0 ? (
-                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4">
                                   <p className="text-sm text-amber-800 font-medium mb-2">No matches found (score ≥ 40%)</p>
                                   <p className="text-xs text-amber-700">
                                     Consider adding more relevant skills or updating your resume to match active job requirements.
@@ -478,11 +514,16 @@ const Resumes = () => {
                                   {expandedMatches[resume.id].map((match, idx) => (
                                     <div
                                       key={idx}
-                                      className="bg-white border border-slate-200 rounded-lg p-4 hover:border-brand-accent/50 transition-colors"
+                                      className="bg-white border-2 border-slate-100 rounded-xl p-4 hover:border-brand-cyan/30 transition-all"
                                     >
                                       <div className="flex items-start justify-between mb-2">
                                         <div className="flex-1">
                                           <div className="flex items-center gap-2 mb-1">
+                                            <div className={`w-2 h-2 rounded-full ${
+                                              idx % 3 === 0 ? 'bg-brand-cyan' : 
+                                              idx % 3 === 1 ? 'bg-brand-orange' : 
+                                              'bg-brand-magenta'
+                                            }`} />
                                             <p className="font-semibold text-slate-900">{match.jd_title}</p>
                                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                                               match.total_score >= 80 ? 'bg-green-100 text-green-700' :
@@ -494,20 +535,21 @@ const Resumes = () => {
                                             </span>
                                           </div>
                                           <p className="text-xs text-slate-600">
-                                            Skills: {match.skill_score}% • Experience: {match.experience_score}%
+                                            Skills: <span className="text-brand-cyan font-medium">{match.skill_score}%</span> • 
+                                            Experience: <span className="text-brand-orange font-medium">{match.experience_score}%</span>
                                           </p>
                                           {match.explanation && match.explanation.suggestion && (
-                                            <div className="mt-2 bg-amber-50 border-l-2 border-amber-400 p-2 text-xs text-amber-800">
-                                              💡 <strong>Tip:</strong> {match.explanation.suggestion}
+                                            <div className="mt-2 bg-gradient-to-r from-amber-50 to-orange-50 border-l-3 border-brand-orange p-2 rounded-r text-xs text-amber-800">
+                                              <strong>Tip:</strong> {match.explanation.suggestion}
                                             </div>
                                           )}
                                         </div>
                                         <div className="flex items-center gap-3 ml-4">
                                           <span className={`font-mono text-xl font-bold ${
-                                            match.total_score >= 80 ? 'text-green-700' :
-                                            match.total_score >= 60 ? 'text-yellow-700' :
-                                            match.total_score >= 50 ? 'text-orange-700' :
-                                            'text-red-700'
+                                            match.total_score >= 80 ? 'text-green-600' :
+                                            match.total_score >= 60 ? 'text-brand-yellow' :
+                                            match.total_score >= 50 ? 'text-brand-orange' :
+                                            'text-red-600'
                                           }`}>
                                             {match.total_score}%
                                           </span>
@@ -515,6 +557,7 @@ const Resumes = () => {
                                             variant="outline"
                                             size="sm"
                                             onClick={() => window.open(`/jobs/${match.jd_id}`, '_blank')}
+                                            className="border-brand-cyan/30 text-brand-cyan hover:bg-brand-cyan hover:text-white"
                                           >
                                             <ExternalLink size={14} className="mr-1" />
                                             View Job
