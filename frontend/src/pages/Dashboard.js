@@ -86,22 +86,26 @@ const Dashboard = () => {
             title="Total Resumes" 
             value={stats?.total_resumes || 0}
             icon={<FileText size={20} />}
+            colorScheme="blue"
           />
           <StatCard 
             title="Recent Resumes" 
             value={stats?.recent_resumes || 0}
             subtitle="Last 3 months"
             icon={<Clock size={20} />}
+            colorScheme="cyan"
           />
           <StatCard 
             title="Active Jobs" 
             value={stats?.active_jds || 0}
             icon={<Briefcase size={20} />}
+            colorScheme="orange"
           />
           <StatCard 
             title="Total Matches" 
             value={stats?.total_matches || 0}
             icon={<TrendingUp size={20} />}
+            colorScheme="magenta"
           />
         </div>
 
