@@ -172,11 +172,6 @@ const CandidatePortal = () => {
                 <p className="text-xs md:text-sm text-slate-500">Skills and Placement Services</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="px-4 py-2 bg-gradient-to-r from-brand-blue to-brand-cyan text-white font-medium rounded-full shadow-md">
-                Candidate Portal
-              </span>
-            </div>
           </div>
         </div>
       </div>
