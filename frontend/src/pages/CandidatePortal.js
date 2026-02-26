@@ -220,8 +220,8 @@ const CandidatePortal = () => {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-bold font-heading text-slate-900 flex items-center gap-2">
-                <DollarSign size={20} className="text-brand-accent" />
+              <h3 className="text-xl font-bold font-heading text-brand-blue mb-2 flex items-center gap-2">
+                <DollarSign size={20} className="text-brand-yellow" />
                 Salary Expectations
               </h3>
               
