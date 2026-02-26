@@ -128,18 +128,12 @@ const CandidatePortal = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-orange-50">
       {/* Header */}
       <div className="bg-white border-b border-slate-200 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6 py-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-              <Briefcase size={24} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold font-heading text-slate-900">SAPS</h1>
-              <p className="text-sm text-slate-600">Skills and Placement Services</p>
-            </div>
+        <div className="max-w-4xl mx-auto px-6 py-4">
+          <div className="flex items-center gap-4">
+            <img src="/saps-logo.png" alt="SAPS Logo" className="h-16 w-auto" />
           </div>
         </div>
       </div>
@@ -147,7 +141,7 @@ const CandidatePortal = () => {
       {/* Welcome Section */}
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold font-heading text-slate-900 mb-4">
+          <h2 className="text-4xl font-bold font-heading text-brand-blue mb-4">
             Welcome to Your Career Journey
           </h2>
           <p className="text-xl text-slate-600 max-w-2xl mx-auto">
